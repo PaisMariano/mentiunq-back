@@ -31,6 +31,7 @@ public class InitInServiceDatabase {
 
     private void fireInitialSlides() throws Exception {
         slideService.create(new Slide(1L,"Slide 1"));
-
+        slideService.create(new Slide(2L,"Slide 2"));
+        slideService.create(new Slide(3L, "Slide 3"));
     }
 }

@@ -23,7 +23,7 @@ public class ResponseUnit implements Serializable {
     private String payload;
 
     public ResponseUnit(Status status, String message, BaseModel payload) {
-        createGsonBuilder(payload.getClass(), new BaseModelSerializer());
+        createGsonBuilder();
 
         this.status = status;
         this.message = message;
@@ -31,16 +31,15 @@ public class ResponseUnit implements Serializable {
     }
 
     public ResponseUnit(Status status, String message, List<? extends BaseModel> payload) {
-        createGsonBuilder(payload.getClass(), new ListSerializer());
+        createGsonBuilder();
 
         this.status = status;
         this.message = message;
         this.payload = gson.toJson(payload);
     }
 
-    private void createGsonBuilder(Class clazz, JsonSerializer serializer) {
+    private void createGsonBuilder() {
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(clazz, serializer);
         this.gson = gsonBuilder.create();
     }
 }
