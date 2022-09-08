@@ -1,11 +1,14 @@
 package com.unq.edu.li.pdesa.mentiUnq.services;
 
+import com.unq.edu.li.pdesa.mentiUnq.exceptions.EntityNotFoundException;
 import com.unq.edu.li.pdesa.mentiUnq.models.Slide;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.Status;
 import com.unq.edu.li.pdesa.mentiUnq.repositories.SlideRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+
 
 @Service
 public class SlideService {
@@ -23,5 +26,11 @@ public class SlideService {
 
     public ResponseUnit findAll() {
         return new ResponseUnit(Status.SUCCESS, "", slideRepository.findAll());
+    }
+
+    public ResponseUnit findById(Long id) throws EntityNotFoundException {
+        return new ResponseUnit(Status.SUCCESS, "", slideRepository.findById(id).orElseThrow(
+                () -> EntityNotFoundException.createWith(id.toString())
+        ));
     }
 }

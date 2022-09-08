@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -21,6 +22,13 @@ public class SlideController {
     public ResponseEntity<?> getAll()
     {
         ResponseUnit slides = slideService.findAll();
+
+        return ResponseEntity.ok(slides);
+    }
+
+    @GetMapping(path = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> getById(@PathVariable("id") Long id) throws Exception {
+        ResponseUnit slides = slideService.findById(id);
 
         return ResponseEntity.ok(slides);
     }

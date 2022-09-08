@@ -2,15 +2,13 @@ package com.unq.edu.li.pdesa.mentiUnq.protocols;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSerializer;
 import com.unq.edu.li.pdesa.mentiUnq.models.BaseModel;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class ResponseUnit implements Serializable {
+public class ResponseUnit {
     private Gson gson;
     @Setter
     @Getter
@@ -36,6 +34,12 @@ public class ResponseUnit implements Serializable {
         this.status = status;
         this.message = message;
         this.payload = gson.toJson(payload);
+    }
+
+    public ResponseUnit(Status status, String message, String payload) {
+        this.status = status;
+        this.message = message;
+        this.payload = payload;
     }
 
     private void createGsonBuilder() {

@@ -1,3 +1,0 @@
-INSERT INTO SLIDE (name) VALUES ("slide 1");
-INSERT INTO SLIDE (name) VALUES ("slide 2");
-INSERT INTO SLIDE (name) VALUES ("slide 3");
