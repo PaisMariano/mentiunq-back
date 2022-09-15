@@ -11,6 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class ResponseHandler extends ResponseEntityExceptionHandler {
+
     @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<Object> handleEntityNotFoundError(EntityNotFoundException ex) {
         return buildResponseEntity(new ResponseUnit(Status.FAIL, ex.getMessage(), ""), HttpStatus.NOT_FOUND);
