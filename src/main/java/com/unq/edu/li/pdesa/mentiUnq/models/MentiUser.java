@@ -26,5 +26,6 @@ public class MentiUser extends BaseModel {
     private Boolean enabled;
     @Getter
     @Setter
+    @Column(length = 1500)
     private String password;
 }
