@@ -4,14 +4,16 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtTokenService {
@@ -32,11 +34,14 @@ public class JwtTokenService {
 	}
 
 	public String generateToken(final UserDetails userDetails) {
+		//List<String> authorities = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+
 		return JWT.create()
 				.withHeader(header)
 				.withSubject(userDetails.getUsername())
 				.withClaim("email", userDetails.getUsername())
-				.withClaim("roles", Arrays.asList("USER"))
+				//.withClaim("authorities", authorities)
+				.withClaim("authorities", Arrays.asList("USER"))
 				.withExpiresAt(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
 				.withIssuer("OAUTH")
 				.sign(this.hmac256);

@@ -1,6 +1,7 @@
 package com.unq.edu.li.pdesa.mentiUnq.services;
 
-import com.unq.edu.li.pdesa.mentiUnq.auths.CustomAuthenticationManager;
+//import com.unq.edu.li.pdesa.mentiUnq.auths.CustomAuthenticationManager;
+import com.unq.edu.li.pdesa.mentiUnq.configs.AuthorizationServerConfig;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.OAuthRequest;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.response.OAuthResponse;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.UnauthorizedException;
@@ -22,10 +23,10 @@ import java.util.Collections;
 public class UserService {
     private final UserRepository userRepository;
     private final CustomUserDetailsService customUserDetailsService;
-    private final CustomAuthenticationManager authenticationManager;
+    private final AuthorizationServerConfig authenticationManager;
     private final JwtTokenService tokenService;
 
-    public UserService(UserRepository userRepository, CustomAuthenticationManager authenticationManager, CustomUserDetailsService customUserDetailsService, JwtTokenService tokenService)
+    public UserService(UserRepository userRepository, AuthorizationServerConfig authenticationManager, CustomUserDetailsService customUserDetailsService, JwtTokenService tokenService)
     {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
