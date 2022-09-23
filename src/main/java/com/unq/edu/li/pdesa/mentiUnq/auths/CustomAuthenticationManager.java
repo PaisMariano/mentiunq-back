@@ -1,4 +1,4 @@
-package com.unq.edu.li.pdesa.mentiUnq.configs;
+package com.unq.edu.li.pdesa.mentiUnq.auths;
 
 import com.unq.edu.li.pdesa.mentiUnq.services.CustomUserDetailsService;
 import org.springframework.security.authentication.AuthenticationManager;

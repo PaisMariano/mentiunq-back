@@ -1,6 +1,6 @@
 package com.unq.edu.li.pdesa.mentiUnq.services;
 
-import com.unq.edu.li.pdesa.mentiUnq.configs.CustomAuthenticationManager;
+import com.unq.edu.li.pdesa.mentiUnq.auths.CustomAuthenticationManager;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.OAuthRequest;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.response.OAuthResponse;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.UnauthorizedException;
@@ -12,8 +12,11 @@ import com.unq.edu.li.pdesa.mentiUnq.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 @Service
 public class UserService {
@@ -52,7 +55,7 @@ public class UserService {
 
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    user.getUserName(), user.getPassword()));
+                    user.getUserName(), user.getPassword(), Collections.singletonList(new SimpleGrantedAuthority("USER"))));
         } catch (final BadCredentialsException ex) {
             throw UnauthorizedException.createWith(HttpStatus.UNAUTHORIZED.toString());
         }

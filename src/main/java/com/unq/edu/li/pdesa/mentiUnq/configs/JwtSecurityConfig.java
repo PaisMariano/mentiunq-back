@@ -36,8 +36,9 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter
 	public void configure(final HttpSecurity http) throws Exception {
 		http.cors().and()
 				.csrf().disable()
-				.authorizeRequests().antMatchers("/authenticate").permitAll()
-				//.anyRequest().hasRole(USER)
+				.authorizeRequests().antMatchers("/api/oauth/authenticate").permitAll()
+				.and().authorizeRequests().antMatchers("/api/slide/**").authenticated()
+				//.anyRequest().authenticated()
 				.and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()

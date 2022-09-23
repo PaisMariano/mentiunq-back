@@ -21,6 +21,10 @@ public class ResponseHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException ex) {
         return buildResponseEntity(new ResponseUnit(Status.FAIL, ex.getMessage(), ""), HttpStatus.UNAUTHORIZED);
     }
+    @ExceptionHandler(Exception.class)
+    protected ResponseEntity<Object> handleException(Exception ex) {
+        return buildResponseEntity(new ResponseUnit(Status.FAIL, ex.getMessage(), ""), HttpStatus.UNAUTHORIZED);
+    }
     private ResponseEntity<Object> buildResponseEntity(ResponseUnit response, HttpStatus statusCode) {
         return new ResponseEntity<>(response, statusCode);
     }

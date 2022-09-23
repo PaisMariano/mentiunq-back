@@ -15,7 +15,7 @@ import java.util.Collections;
 public class CustomUserDetailsService implements UserDetailsService
 {
 	public static final String USER = "USER";
-	public static final String ROLE_USER = "ROLE" + USER;
+	public static final String ADMIN = "ADMIN";
 	private final UserRepository userRepository;
 
 	@Autowired
@@ -31,6 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService
 		{
 			throw new UsernameNotFoundException("User " + username + " not found");
 		}
-		return new User(username, client.getPassword(), Collections.singletonList(new SimpleGrantedAuthority(ROLE_USER)));
+		return new User(username, client.getPassword(), Collections.singletonList(new SimpleGrantedAuthority(USER)));
 	}
+
 }

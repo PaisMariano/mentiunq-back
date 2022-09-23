@@ -4,6 +4,8 @@ import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.services.SlideService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +20,7 @@ public class SlideController {
         this.slideService = slideService;
     }
 
+    @Secured("USER1")
     @GetMapping(path = "", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<?> getAll()
     {
@@ -26,6 +29,7 @@ public class SlideController {
         return ResponseEntity.ok(slides);
     }
 
+    @Secured(value = "USER")
     @GetMapping(path = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<?> getById(@PathVariable("id") Long id) throws Exception {
         ResponseUnit slides = slideService.findById(id);
