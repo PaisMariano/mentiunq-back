@@ -93,7 +93,7 @@
 					<artifactId>springdoc-openapi-maven-plugin</artifactId>
 					<version>1.0</version>
 					<configuration>
-						<apiDocsUrl>http://localhost:8888/business-manager/v3/api-docs</apiDocsUrl>
+						<apiDocsUrl>http://localhost:8998/v3/api-docs</apiDocsUrl>
 						<outputFileName>${project.artifactId}-openapi.json</outputFileName>
 					</configuration>
 				</plugin>
