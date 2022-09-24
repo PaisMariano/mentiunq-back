@@ -78,6 +78,26 @@
 			<artifactId>spring-security-jwt</artifactId>
 			<version>1.0.9.RELEASE</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.6.4</version>
+		</dependency>
 	</dependencies>
 
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.springdoc</groupId>
+					<artifactId>springdoc-openapi-maven-plugin</artifactId>
+					<version>1.0</version>
+					<configuration>
+						<apiDocsUrl>http://localhost:8888/business-manager/v3/api-docs</apiDocsUrl>
+						<outputFileName>${project.artifactId}-openapi.json</outputFileName>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 </project>
