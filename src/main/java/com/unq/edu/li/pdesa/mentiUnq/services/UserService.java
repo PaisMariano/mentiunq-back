@@ -6,9 +6,11 @@ import com.unq.edu.li.pdesa.mentiUnq.controllers.request.OAuthRequest;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.response.OAuthResponse;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.UnauthorizedException;
 import com.unq.edu.li.pdesa.mentiUnq.models.LoginProvider;
+import com.unq.edu.li.pdesa.mentiUnq.models.MailingWhiteList;
 import com.unq.edu.li.pdesa.mentiUnq.models.MentiUser;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.Status;
+import com.unq.edu.li.pdesa.mentiUnq.repositories.MailingRepository;
 import com.unq.edu.li.pdesa.mentiUnq.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -25,13 +28,19 @@ public class UserService {
     private final CustomUserDetailsService customUserDetailsService;
     private final AuthorizationServerConfig authenticationManager;
     private final JwtTokenService tokenService;
+    private final MailingRepository mailingRepository;
 
-    public UserService(UserRepository userRepository, AuthorizationServerConfig authenticationManager, CustomUserDetailsService customUserDetailsService, JwtTokenService tokenService)
+    public UserService(UserRepository userRepository,
+                       AuthorizationServerConfig authenticationManager,
+                       CustomUserDetailsService customUserDetailsService,
+                       JwtTokenService tokenService,
+                       MailingRepository mailingRepository)
     {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.customUserDetailsService = customUserDetailsService;
         this.tokenService = tokenService;
+        this.mailingRepository = mailingRepository;
     }
 
     public MentiUser processOAuthPostLogin(String username, String password) {
@@ -52,6 +61,7 @@ public class UserService {
 
     public ResponseUnit authenticate(OAuthRequest authenticationRequest) throws UnauthorizedException
     {
+        authenticateWhiteListEmail(authenticationRequest.getEmail());
         MentiUser user = processOAuthPostLogin(authenticationRequest.getEmail(), authenticationRequest.getIdToken());
 
         try {
@@ -66,5 +76,15 @@ public class UserService {
         return new ResponseUnit(Status.SUCCESS, "", OAuthResponse.builder()
                 .accessToken(tokenService.generateToken(userDetails))
                 .build());
+    }
+    public void createWhiteListEmail(String email) {
+        MailingWhiteList mailingWhiteList = new MailingWhiteList(email);
+        mailingRepository.save(mailingWhiteList);
+    }
+
+    private void authenticateWhiteListEmail(String email) throws UnauthorizedException {
+        mailingRepository.getMailingWhiteListByEmail(email).orElseThrow(
+                () -> UnauthorizedException.createWith("No se encuentra el mail registrado en la whitelist.")
+        );
     }
 }
