@@ -225,6 +225,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	}
 
 	@Bean
+	@Primary
 	public DefaultTokenServices tokenServicesResourceOwner()
 	{
 		DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
@@ -310,7 +311,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 @Order(SecurityProperties.BASIC_AUTH_ORDER - 2)
 class AuthServerConfig extends WebSecurityConfigurerAdapter
 {
-	@Autowired
+	/*@Autowired
 	public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception
 	{
 		auth.inMemoryAuthentication()
@@ -318,7 +319,7 @@ class AuthServerConfig extends WebSecurityConfigurerAdapter
 				.withUser("alice").password("password").authorities("user").and()
 				.withUser("bob").password("password").authorities("user").and()
 				.withUser("eve").password("password").authorities("user");
-	}
+	}*/
 
 	@Bean
 	@Override

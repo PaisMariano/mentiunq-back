@@ -35,12 +35,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter
 	private static final RequestMatcher PROTECTED_URLS = new OrRequestMatcher(
 			new AntPathRequestMatcher("/api/**"));
 
-	@Bean
+	/*@Bean
 	public PasswordEncoder passwordEncoder()
 	{
 		return new BCryptPasswordEncoder();
 	}
-
+*/
 	@Override
 	public void configure(HttpSecurity http) throws Exception
 	{
@@ -50,11 +50,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter
 				.and().csrf().disable();
 	}
 
-	@Override
+	/*@Override
 	public void configure(ResourceServerSecurityConfigurer config)
 	{
 		config.resourceId("oauth2-resource").tokenServices(tokenServices());
 	}
+
 	@Bean
 	@Primary
 	public DefaultTokenServices tokenServices()
@@ -77,7 +78,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter
 		converter.setSigningKey(verifierKey);
 		converter.setVerifierKey(verifierKey);
 		return converter;
-	}
+	}*/
 
 	/*@Bean
 	public FilterRegistrationBean corsFilter()
