@@ -1,6 +1,13 @@
 package com.unq.edu.li.pdesa.mentiUnq.controllers;
 
+import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.services.FormService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/api/forms")
+@Tag(name = "Foms Controller.")
 public class FormController {
+
 	private final FormService service;
 
 	@Autowired
@@ -21,14 +30,26 @@ public class FormController {
 		this.service = service;
 	}
 
+	@Operation(summary = "Get form by id service", description = "Get a specific form by userId", operationId = "getByUserId")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+	})
 	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getByUserId(@PathVariable("id") Long id) throws Exception
+	public ResponseEntity<ResponseUnit> getByUserId(@PathVariable("id") Long id) throws Exception
 	{
-		return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
+		return new ResponseEntity<ResponseUnit>(service.findById(id), HttpStatus.OK);
 	}
 
+	@Operation(summary = "Create a form", description = "Create a new form", operationId = "create")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+	})
 	@PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> create(){
+	public ResponseEntity<ResponseUnit> create(){
 		return new ResponseEntity<>(service.create(), HttpStatus.OK);
 	}
 }
