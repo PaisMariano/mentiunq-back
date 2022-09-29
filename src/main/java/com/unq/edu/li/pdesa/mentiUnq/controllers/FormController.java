@@ -1,8 +1,10 @@
 package com.unq.edu.li.pdesa.mentiUnq.controllers;
 
+import com.unq.edu.li.pdesa.mentiUnq.exceptions.EntityNotFoundException;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.services.FormService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -48,8 +50,10 @@ public class FormController {
 			@ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
 			@ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
 	})
-	@PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ResponseUnit> create(){
-		return new ResponseEntity<>(service.create(), HttpStatus.OK);
+	@PostMapping(path = "{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResponseUnit> create(
+			@Parameter(description = "User ID", required = true) @PathVariable("userId") Long userId) throws EntityNotFoundException
+	{
+		return new ResponseEntity<>(service.create(userId), HttpStatus.OK);
 	}
 }

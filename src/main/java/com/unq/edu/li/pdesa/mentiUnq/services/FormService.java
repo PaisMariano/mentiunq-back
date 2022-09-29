@@ -6,6 +6,7 @@ import com.unq.edu.li.pdesa.mentiUnq.models.MentiUser;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.Status;
 import com.unq.edu.li.pdesa.mentiUnq.repositories.FormRepository;
+import com.unq.edu.li.pdesa.mentiUnq.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +17,12 @@ import java.util.UUID;
 @Service
 public class FormService {
     private final FormRepository formRepository;
+	private final UserRepository userRepository;
 	private final ModelMapper mapper;
 
-    public FormService(FormRepository formRepository) {
+    public FormService(FormRepository formRepository, UserRepository userRepository) {
         this.formRepository = formRepository;
+		this.userRepository = userRepository;
 		mapper = new ModelMapper();
     }
 
@@ -28,21 +31,21 @@ public class FormService {
                 () -> EntityNotFoundException.createWith(id.toString())));
     }
 
-	public ResponseUnit create()
+	public ResponseUnit create(Long userId) throws EntityNotFoundException
 	{
-		//Type listType = new TypeToken<List<Question>>(){}.getType();
 		String code = UUID.randomUUID().toString();
-		MentiUser user = MentiUser.builder().name("pepito").build(); //TODO replace with select to DB from Token.id
+		MentiUser user = userRepository.findById(userId).orElseThrow(
+				() -> EntityNotFoundException.createWith(userId.toString()));
 
 		Form form = Form.builder()
 				.code(code)
 				.codeShare(Base64.getEncoder().encodeToString(code.getBytes(StandardCharsets.UTF_8)).substring(0, 8).toUpperCase())
-				//.questions(mapper.map(request.getQuestions(), listType))
-				//.mentiUser(user)
 				.build();
 
-		form = formRepository.save(form);
+		//form = formRepository.save(form);
+		user.setForm(form);
+		user = userRepository.save(user);
 
-		return new ResponseUnit(Status.SUCCESS, "", form);
+		return new ResponseUnit(Status.SUCCESS, "", user);
 	}
 }

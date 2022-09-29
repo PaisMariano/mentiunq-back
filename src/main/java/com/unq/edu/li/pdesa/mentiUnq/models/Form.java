@@ -24,8 +24,4 @@ public class Form extends BaseModel {
 
     @OneToMany(mappedBy = "form", fetch = FetchType.EAGER)
     private List<Question> questions;
-
-    //@OneToOne
-    //private MentiUser mentiUser;
-
 }

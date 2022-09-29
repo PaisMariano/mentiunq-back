@@ -1,6 +1,8 @@
 package com.unq.edu.li.pdesa.mentiUnq.configs;
 
+import com.unq.edu.li.pdesa.mentiUnq.models.MentiUser;
 import com.unq.edu.li.pdesa.mentiUnq.models.Slide;
+import com.unq.edu.li.pdesa.mentiUnq.repositories.UserRepository;
 import com.unq.edu.li.pdesa.mentiUnq.services.FormService;
 import com.unq.edu.li.pdesa.mentiUnq.services.SlideService;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,11 +14,11 @@ import javax.annotation.PostConstruct;
 public class InitInServiceDatabase {
     @Value("${spring.datasource.driverClassName:org.h2.Driver}")
     private String className;
-    //private final FormService formService;
+    private final UserRepository userRepository;
     private final SlideService slideService;
 
-    public InitInServiceDatabase(SlideService slideService){
-        //this.formService = formService;
+    public InitInServiceDatabase(SlideService slideService, UserRepository userRepository){
+        this.userRepository = userRepository;
         this.slideService = slideService;
     }
 
@@ -25,6 +27,7 @@ public class InitInServiceDatabase {
         if (className.equals("org.h2.Driver")) {
             fireInitialSlides();
 
+            userRepository.save(MentiUser.builder().userName("pepito").build());
         }
     }
 
