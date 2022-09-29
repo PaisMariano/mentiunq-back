@@ -6,6 +6,9 @@ Repositorio back-end para mentiUNQ
     JDK 1.8
     Maven 3.6.3
 
+Revisar que estén bien seteadas las variables JAVA_HOME y MAVEN_HOME en computadora. Para corroborarlo puede probar por consola
+```echo $JAVA_HOME``` y también  ```echo $MAVEN_HOME``` deben apuntar a cada carpeta correspondiente.
+
 ### Instalación
 Una vez descargado el proyecto, al abrirlo con cualquier IDE automáticamente detecterá el POM y buscará instalar todas las dependencias. En caso de que haya algún problema o asegurarse que se instale correctamente, se puede ejecutar el comando
 ```mvn clean install```
