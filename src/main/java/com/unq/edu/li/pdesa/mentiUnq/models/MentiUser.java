@@ -30,6 +30,7 @@ public class MentiUser extends BaseModel {
     @Column(length = 1500)
     private String password;
 
-    @OneToMany(mappedBy = "mentiUser", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "mentiUser")
+    @Getter
     private List<Form> forms;
 }

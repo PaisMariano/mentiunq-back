@@ -1,10 +1,10 @@
 package com.unq.edu.li.pdesa.mentiUnq.configs;
 
-import com.unq.edu.li.pdesa.mentiUnq.models.MailingWhiteList;
+import com.unq.edu.li.pdesa.mentiUnq.models.Form;
 import com.unq.edu.li.pdesa.mentiUnq.models.Slide;
-import com.unq.edu.li.pdesa.mentiUnq.repositories.MailingRepository;
 import com.unq.edu.li.pdesa.mentiUnq.services.FormService;
 import com.unq.edu.li.pdesa.mentiUnq.services.SlideService;
+import com.unq.edu.li.pdesa.mentiUnq.services.AuthService;
 import com.unq.edu.li.pdesa.mentiUnq.services.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,13 +15,19 @@ import javax.annotation.PostConstruct;
 public class InitInServiceDatabase {
     @Value("${spring.datasource.driverClassName:org.h2.Driver}")
     private String className;
-    //private final FormService formService;
+    private final FormService formService;
     private final SlideService slideService;
+    private final AuthService authService;
     private final UserService userService;
 
-    public InitInServiceDatabase(SlideService slideService, UserService userService){
-        //this.formService = formService;
+    public InitInServiceDatabase(SlideService slideService,
+                                 AuthService authService,
+                                 FormService formService,
+                                 UserService userService) {
+
+        this.formService = formService;
         this.slideService = slideService;
+        this.authService = authService;
         this.userService = userService;
     }
 
@@ -29,7 +35,9 @@ public class InitInServiceDatabase {
     public void initialize() throws Exception {
         if (className.equals("org.h2.Driver")) {
             fireInitialSlides();
+            fireInitialUsers();
             fireInitialMailWhitelist();
+            fireInitialForms();
         }
     }
 
@@ -47,7 +55,19 @@ public class InitInServiceDatabase {
         slideService.create(new Slide(11L, "Bullets"));
 
     }
+    private void fireInitialUsers() throws Exception {
+        authService.processOAuthPostLogin("paismariano@gmail.com", "123456789");
+        authService.processOAuthPostLogin("pablo.g.marrero@gmail.com", "123456789");
+    }
+
     private void fireInitialMailWhitelist() throws Exception {
-        userService.createWhiteListEmail("paismarianoa@gmail.com");
+        authService.createWhiteListEmail("paismarianoa@gmail.com");
+    }
+
+    private void fireInitialForms() {
+        formService.createForm(
+                new Form(
+                        "12345678abcdefgh|@#~½¬{[",
+                        "12345678"));
     }
 }

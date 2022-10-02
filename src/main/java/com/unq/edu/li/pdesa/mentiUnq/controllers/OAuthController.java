@@ -2,7 +2,7 @@ package com.unq.edu.li.pdesa.mentiUnq.controllers;
 
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.OAuthRequest;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
-import com.unq.edu.li.pdesa.mentiUnq.services.UserService;
+import com.unq.edu.li.pdesa.mentiUnq.services.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "OAuth Controller.")
 public class OAuthController
 {
-	private final UserService userService;
+	private final AuthService userService;
 
 	@Autowired
-	public OAuthController(UserService userService)
+	public OAuthController(AuthService userService)
 	{
 		this.userService = userService;
 	}

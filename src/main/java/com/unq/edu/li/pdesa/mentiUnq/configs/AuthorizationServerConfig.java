@@ -1,7 +1,7 @@
 package com.unq.edu.li.pdesa.mentiUnq.configs;
 
 import com.unq.edu.li.pdesa.mentiUnq.services.CustomUserDetailsService;
-import com.unq.edu.li.pdesa.mentiUnq.services.UserService;
+import com.unq.edu.li.pdesa.mentiUnq.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -13,7 +13,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
@@ -63,7 +62,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Autowired
 	private CustomUserDetailsService userDetailsService;
 	@Autowired
-	private UserService userService;
+	private AuthService userService;
 	@Autowired
 	protected HttpServletRequest requestHttp;
 
