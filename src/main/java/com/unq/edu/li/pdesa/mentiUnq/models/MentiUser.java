@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "menti_user")
@@ -28,4 +29,7 @@ public class MentiUser extends BaseModel {
     @Setter
     @Column(length = 1500)
     private String password;
+
+    @OneToMany(mappedBy = "mentiUser", fetch = FetchType.EAGER)
+    private List<Form> forms;
 }
