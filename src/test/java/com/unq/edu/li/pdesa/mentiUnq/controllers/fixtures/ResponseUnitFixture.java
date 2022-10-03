@@ -28,7 +28,7 @@ public class ResponseUnitFixture
 
 	public static ResponseUnit withOkResponseSlides()
 	{
-		String payload =  "[{\"id\":1,\"nombre\":\"Multiple Choice\"},{\"id\":2,\"nombre\":\"World Cloud\"},{\"id\":3,\"nombre\":\"Open Ended\"},{\"id\":4,\"nombre\":\"Scales\"},{\"id\":5,\"nombre\":\"Ranking\"},{\"id\":6,\"nombre\":\"Q\\u0026A\"},{\"id\":7,\"nombre\":\"Select Answer\"},{\"id\":8,\"nombre\":\"Type Answer\"},{\"id\":9,\"nombre\":\"Heading\"},{\"id\":10,\"nombre\":\"Paragraph\"},{\"id\":11,\"nombre\":\"Bullets\"}]";
+		String payload =  "[{\"id\":1,\"nombre\":\"Multiple Choice\"}]";
 		ResponseUnit responseUnit = ResponseUnitFixture.withDefaults();
 		responseUnit.setPayload(payload);
 		return responseUnit;
