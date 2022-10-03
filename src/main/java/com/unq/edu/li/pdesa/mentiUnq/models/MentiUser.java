@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -27,7 +28,7 @@ public class MentiUser extends BaseModel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(cascade = { CascadeType.ALL })
+    @OneToMany(cascade = { CascadeType.ALL })
     @JoinColumn(name = "form_fk", referencedColumnName = "id")
     private Form form;
 
