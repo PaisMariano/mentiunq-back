@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+
 @ControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ResponseHandler extends ResponseEntityExceptionHandler {
