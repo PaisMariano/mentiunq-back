@@ -1,5 +1,6 @@
 package com.unq.edu.li.pdesa.mentiUnq.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,6 +31,7 @@ public class MentiUser extends BaseModel {
     @Column(length = 1500)
     private String password;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "mentiUser")
     @Getter
     private List<Form> forms;
