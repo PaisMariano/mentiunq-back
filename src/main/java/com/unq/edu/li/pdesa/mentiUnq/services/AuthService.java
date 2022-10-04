@@ -75,6 +75,7 @@ public class AuthService {
                 .accessToken(tokenService.generateToken(userDetails))
                 .build());
     }
+
     public void createWhiteListEmail(String email) {
         MailingWhiteList mailingWhiteList = new MailingWhiteList(email);
         mailingRepository.save(mailingWhiteList);

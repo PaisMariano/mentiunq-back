@@ -34,26 +34,26 @@ public class JwtTokenService {
 	}
 
 	public String generateToken(final UserDetails userDetails) {
-		//List<String> authorities = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+		List<String> authorities = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
 		return JWT.create()
 				.withHeader(header)
 				.withSubject(userDetails.getUsername())
 				.withClaim("email", userDetails.getUsername())
 				//.withClaim("authorities", authorities)
-				.withClaim("authorities", Arrays.asList("USER"))
+				.withClaim("authorities", authorities)
 				.withExpiresAt(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
 				.withIssuer("OAUTH")
 				.sign(this.hmac256);
 	}
 
-	public String validateTokenAndGetUsername(final String token) {
+	//TODO: creo que deberia borrarse
+	/*public String validateTokenAndGetUsername(final String token) {
 		try {
 			return verifier.verify(token).getSubject();
 		} catch (final JWTVerificationException verificationEx) {
 			return null;
 		}
-	}
-
+	}*/
 
 }
