@@ -51,6 +51,6 @@ public class ResponseUnit {
 
     private void createGsonBuilder() {
         GsonBuilder gsonBuilder = new GsonBuilder();
-        this.gson = gsonBuilder.create();
+        this.gson = gsonBuilder.excludeFieldsWithoutExposeAnnotation().create();
     }
 }

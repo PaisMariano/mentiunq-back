@@ -32,7 +32,7 @@ public class MentiUser extends BaseModel {
     private String password;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "mentiUser")
+    @OneToMany(mappedBy = "mentiUser", fetch = FetchType.EAGER)
     @Getter
     private List<Form> forms;
 }

@@ -14,9 +14,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Form Controller.")
 @Controller
@@ -34,9 +36,10 @@ public class FormController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
             @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
     })
-    @PostMapping(path = "/form", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<?> getById(@Parameter(description = "Form", required = true)@RequestBody Form form) throws Exception {
-        ResponseUnit createdForm = formService.createForm(form);
+    @PostMapping(path = "/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> create(//@Parameter(description = "Form", required = true)@RequestBody Form form,
+                                    @Parameter(description = "User Id", required = true)@PathVariable("userId") Long userId) throws Exception {
+        ResponseUnit createdForm = formService.createForm(userId);
 
         return ResponseEntity.ok(createdForm);
     }

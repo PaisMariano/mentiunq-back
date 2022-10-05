@@ -1,6 +1,6 @@
 package com.unq.edu.li.pdesa.mentiUnq.configs;
 
-import com.unq.edu.li.pdesa.mentiUnq.models.Form;
+import com.unq.edu.li.pdesa.mentiUnq.exceptions.EntityNotFoundException;
 import com.unq.edu.li.pdesa.mentiUnq.models.Slide;
 import com.unq.edu.li.pdesa.mentiUnq.services.FormService;
 import com.unq.edu.li.pdesa.mentiUnq.services.SlideService;
@@ -64,10 +64,8 @@ public class InitInServiceDatabase {
         authService.createWhiteListEmail("paismarianoa@gmail.com");
     }
 
-    private void fireInitialForms() {
-        formService.createForm(
-                new Form(
-                        "12345678abcdefgh|@#~½¬{[",
-                        "12345678"));
+    private void fireInitialForms() throws EntityNotFoundException
+    {
+        formService.createForm(1l);
     }
 }

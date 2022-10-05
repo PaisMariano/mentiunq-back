@@ -3,7 +3,6 @@ package com.unq.edu.li.pdesa.mentiUnq.services;
 import com.unq.edu.li.pdesa.mentiUnq.models.Form;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.repositories.FormRepository;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -31,7 +30,7 @@ public class FormServiceTest
 
 		when(formRepository.save(any(Form.class))).thenReturn(form);
 
-		ResponseUnit responseUnit = service.createForm(form);
+		ResponseUnit responseUnit = service.createForm(userId);
 
 		assertNotNull(responseUnit);
 	}

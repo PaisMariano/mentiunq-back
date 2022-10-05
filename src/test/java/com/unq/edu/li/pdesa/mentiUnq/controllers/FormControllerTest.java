@@ -1,7 +1,6 @@
 package com.unq.edu.li.pdesa.mentiUnq.controllers;
 
 import com.unq.edu.li.pdesa.mentiUnq.controllers.fixtures.ResponseUnitFixture;
-import com.unq.edu.li.pdesa.mentiUnq.models.Form;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.services.FormService;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,7 +49,7 @@ public class FormControllerTest extends AbstractControllerTest
 	{
 		ResponseUnit responseUnit = ResponseUnitFixture.withOkResponseCreateForm();
 
-		when(formService.createForm(any(Form.class))).thenReturn(responseUnit);
+		when(formService.createForm(userId)).thenReturn(responseUnit);
 
 		final MvcResult result = mockMvc.perform(post("/api/form/form")
 						.content(asJsonString(responseUnit))
