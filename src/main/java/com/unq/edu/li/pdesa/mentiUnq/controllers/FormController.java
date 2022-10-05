@@ -37,8 +37,7 @@ public class FormController {
             @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
     })
     @PostMapping(path = "/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<?> create(//@Parameter(description = "Form", required = true)@RequestBody Form form,
-                                    @Parameter(description = "User Id", required = true)@PathVariable("userId") Long userId) throws Exception {
+    public ResponseEntity<?> create(@Parameter(description = "User Id", required = true)@PathVariable("userId") Long userId) throws Exception {
         ResponseUnit createdForm = formService.createForm(userId);
 
         return ResponseEntity.ok(createdForm);
