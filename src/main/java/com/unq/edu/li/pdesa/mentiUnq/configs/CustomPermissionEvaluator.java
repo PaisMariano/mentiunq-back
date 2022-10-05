@@ -15,17 +15,18 @@ import java.io.Serializable;
 import java.util.Set;
 
 @Component
-public class CustomPermissionEvaluator implements PermissionEvaluator, ApplicationContextAware
+public class CustomPermissionEvaluator implements PermissionEvaluator//, ApplicationContextAware
 {
-	private ApplicationContext applicationContext;
+	//private ApplicationContext applicationContext;
 
 	private final Logger logger = LoggerFactory.getLogger(CustomPermissionEvaluator.class);
 
-	@Override
+	//TODO:revisar esto, no se usa en OAuth
+	/*@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
 	{
 		this.applicationContext = applicationContext;
-	}
+	}*/
 
 	@Override
 	public boolean hasPermission(Authentication authentication, Object privilegeRequired, Object scopeRequired)
@@ -40,8 +41,9 @@ public class CustomPermissionEvaluator implements PermissionEvaluator, Applicati
 			return false;
 		}
 
-		return isAuthorized( (String) privilegeRequired, authentication)
-				|| isScopeAuthorized((String) scopeRequired, authentication);
+		return isAuthorized( (String) privilegeRequired, authentication);
+		//TODO: revisar, esto no se usa
+				//|| isScopeAuthorized((String) scopeRequired, authentication);
 	}
 
 	private boolean isAuthorized(String privilegeRequired, Authentication authentication)
@@ -56,7 +58,7 @@ public class CustomPermissionEvaluator implements PermissionEvaluator, Applicati
 		return false;
 	}
 
-	private boolean isScopeAuthorized(String scopeRequired, Authentication authentication)
+	/*private boolean isScopeAuthorized(String scopeRequired, Authentication authentication)
 	{
 		if (authentication instanceof OAuth2Authentication)
 		{
@@ -74,7 +76,7 @@ public class CustomPermissionEvaluator implements PermissionEvaluator, Applicati
 			return false;
 		}
 		return true;
-	}
+	}*/
 
 	@Override
 	public boolean hasPermission(Authentication authentication, Serializable serializable, String s, Object o) {

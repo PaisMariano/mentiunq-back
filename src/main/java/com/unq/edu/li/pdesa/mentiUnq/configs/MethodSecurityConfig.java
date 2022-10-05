@@ -13,6 +13,7 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration
 {
 	private CustomPermissionEvaluator customPermissionEvaluator;
 
+	//TODO revisar de pasarlo a constructor para poder testearlo mejor
 	@Autowired
 	public void setCustomPermissionEvaluator(CustomPermissionEvaluator customPermissionEvaluator) {
 		this.customPermissionEvaluator = customPermissionEvaluator;

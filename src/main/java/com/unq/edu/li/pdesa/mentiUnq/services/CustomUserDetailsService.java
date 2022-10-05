@@ -23,6 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService
 	{
 		this.userRepository = userRepository;
 	}
+
 	@Override
 	public UserDetails loadUserByUsername(final String username) {
 		final MentiUser client = userRepository.getUserByUsername(username);

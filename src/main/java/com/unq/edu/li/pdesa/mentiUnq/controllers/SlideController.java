@@ -43,7 +43,7 @@ public class SlideController {
         return ResponseEntity.ok(slides);
     }
 
-    @PreAuthorize("hasAuthority('USER2')")
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(summary = "Get slide by id", description = "Get a slides from database with his own structure", operationId = "getById")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),

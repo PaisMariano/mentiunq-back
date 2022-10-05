@@ -1,10 +1,12 @@
 package com.unq.edu.li.pdesa.mentiUnq.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "menti_user")
@@ -28,4 +30,9 @@ public class MentiUser extends BaseModel {
     @Setter
     @Column(length = 1500)
     private String password;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "mentiUser", fetch = FetchType.EAGER)
+    @Getter
+    private List<Form> forms;
 }
