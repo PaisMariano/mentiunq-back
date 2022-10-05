@@ -64,3 +64,4 @@ Para una correcta organización, el proyeco se dividió en varias carpetas dentr
 - services: carpeta donde se encuentran los servicios para poder recibir las solicitudes desde los controllers y saber como interactuar con el modelo.
 
 ### UML
+[![UML back mentiunq](https://i.imgur.com/l1QTkYF.png)]
