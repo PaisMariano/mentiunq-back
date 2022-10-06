@@ -10,6 +10,7 @@ import com.unq.edu.li.pdesa.mentiUnq.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -30,12 +31,14 @@ public class FormService {
         );
 
         String code = UUID.randomUUID().toString();
+        String codeShare = Base64.getEncoder().encodeToString(code.getBytes(StandardCharsets.UTF_8)).substring(0, 8).toUpperCase();
 
-        Form form = new Form(
-                code,
-                Base64.getEncoder().encodeToString(code.getBytes(StandardCharsets.UTF_8)).substring(0, 8).toUpperCase()
-        );
-
+        Form form = new Form();
+        form.setCode(code);
+        form.setCodeShare(codeShare);
+        form.setName("Formulario "+codeShare);
+        form.setCreationDate(LocalDateTime.now());
+        form.setUpdateDate(LocalDateTime.now());
         form.setMentiUser(user);
 
         return new ResponseUnit(Status.SUCCESS, "", formRepository.save(form));
