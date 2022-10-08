@@ -1,6 +1,7 @@
 package com.unq.edu.li.pdesa.mentiUnq.models;
 
 import com.google.gson.annotations.Expose;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -11,10 +12,12 @@ import java.util.List;
 @Entity
 @Table(name = "form")
 @NoArgsConstructor
+@Getter
 @Setter
 public class Form extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Expose
     private Long id;
 
     @Expose
@@ -28,7 +31,7 @@ public class Form extends BaseModel {
     @Expose
     private LocalDateTime updateDate;
 
-    @OneToMany(mappedBy = "form", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "form", fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST , CascadeType.REMOVE })
     @Expose
     private List<Question> questions;
 
