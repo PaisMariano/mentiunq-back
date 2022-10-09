@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -49,7 +48,7 @@ public class FormController {
             @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
     })
 
-    @PatchMapping(path = "/{formId}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @PatchMapping(path = "/{formId}", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity update(@Parameter(description = "Form body", required = true)@PathVariable("formId") Long id, @RequestBody FormRequest form) throws Exception {
         ResponseUnit createdForm = formService.updateForm(id, form);
 

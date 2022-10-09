@@ -2,6 +2,7 @@ package com.unq.edu.li.pdesa.mentiUnq.models;
 
 import com.google.gson.annotations.Expose;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Table(name = "question")
 @Setter
 @Getter
+@NoArgsConstructor
 public class Question extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

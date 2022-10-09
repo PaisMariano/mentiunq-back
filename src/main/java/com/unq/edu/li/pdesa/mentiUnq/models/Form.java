@@ -31,7 +31,7 @@ public class Form extends BaseModel {
     @Expose
     private LocalDateTime updateDate;
 
-    @OneToMany(mappedBy = "form", fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST , CascadeType.REMOVE })
+    @OneToMany(mappedBy = "form", fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST , CascadeType.REMOVE, CascadeType.MERGE })
     @Expose
     private List<Question> questions;
 
