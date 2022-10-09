@@ -47,6 +47,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and().authorizeRequests().requestMatchers(PUBLIC_URLS).permitAll()
 				.and().authorizeRequests().requestMatchers(PROTECTED_URLS).authenticated()
+				.and().headers().frameOptions().sameOrigin()
 				.and().csrf().disable();
 	}
 

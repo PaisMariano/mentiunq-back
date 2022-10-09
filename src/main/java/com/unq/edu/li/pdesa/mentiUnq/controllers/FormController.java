@@ -16,6 +16,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @Tag(name = "Form Controller.")
 @Controller
 @RequestMapping("/api/form")
@@ -49,7 +51,10 @@ public class FormController {
     })
 
     @PatchMapping(path = "/{formId}", produces = { MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity update(@Parameter(description = "Form body", required = true)@PathVariable("formId") Long id, @RequestBody FormRequest form) throws Exception {
+    public ResponseEntity update(
+            @Parameter(description = "Form body", required = true)
+            @PathVariable("formId") Long id,
+            @RequestBody FormRequest form) throws Exception {
         ResponseUnit createdForm = formService.updateForm(id, form);
 
         return ResponseEntity.ok(createdForm);

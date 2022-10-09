@@ -18,7 +18,7 @@ public class UserService {
     }
 
     public ResponseUnit getAllFormsById(Long id) throws EntityNotFoundException {
-        List<Form> forms = userRepository.findById(id).orElseThrow(
+        List<Form> forms = userRepository.getFullUserById(id).orElseThrow(
                         () -> EntityNotFoundException.createWith(id.toString()))
                 .getForms();
 

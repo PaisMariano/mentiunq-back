@@ -1,5 +1,6 @@
 package com.unq.edu.li.pdesa.mentiUnq.handlers;
 
+import com.unq.edu.li.pdesa.mentiUnq.exceptions.BadRequestException;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.EntityNotFoundException;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.UnauthorizedException;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
@@ -31,6 +32,12 @@ public class ResponseHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
         return buildResponseEntity(new ResponseUnit(Status.FAIL, ex.getMessage(), ""), HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(BadRequestException.class)
+    protected ResponseEntity<Object> handleBadRequestException(BadRequestException ex) {
+        return buildResponseEntity(new ResponseUnit(Status.FAIL, ex.getMessage(), ""), HttpStatus.BAD_REQUEST);
+    }
+
     private ResponseEntity<Object> buildResponseEntity(ResponseUnit response, HttpStatus statusCode) {
         return new ResponseEntity<>(response, statusCode);
     }

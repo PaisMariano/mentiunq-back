@@ -1,10 +1,13 @@
 package com.unq.edu.li.pdesa.mentiUnq.controllers.request;
 
 import com.unq.edu.li.pdesa.mentiUnq.models.Question;
+import com.unq.edu.li.pdesa.mentiUnq.models.Slide;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Setter
@@ -12,5 +15,5 @@ import java.util.List;
 @NoArgsConstructor
 public class FormRequest
 {
-    private List<Question> questions;
+    private List<QuestionRequest> questions;
 }
