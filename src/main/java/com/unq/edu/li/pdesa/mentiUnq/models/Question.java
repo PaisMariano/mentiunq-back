@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "question")
@@ -15,6 +16,7 @@ import javax.persistence.*;
 public class Question extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Expose
     private Long id;
 
     @Expose
@@ -28,4 +30,7 @@ public class Question extends BaseModel {
     @JoinColumn(name = "form_id")
     private Form form;
 
+    @OneToMany(mappedBy = "question")
+    @Expose
+    private List<MentiOption> mentiOptions;
 }
