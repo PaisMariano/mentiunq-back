@@ -2,7 +2,7 @@ package com.unq.edu.li.pdesa.mentiUnq.services;
 
 import com.unq.edu.li.pdesa.mentiUnq.configs.AuthorizationServerConfig;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.OAuthRequest;
-import com.unq.edu.li.pdesa.mentiUnq.controllers.response.OAuthResponse;
+import com.unq.edu.li.pdesa.mentiUnq.controllers.response.UserResponse;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.UnauthorizedException;
 import com.unq.edu.li.pdesa.mentiUnq.models.LoginProvider;
 import com.unq.edu.li.pdesa.mentiUnq.models.MailingWhiteList;
@@ -71,9 +71,14 @@ public class AuthService {
 
         final UserDetails userDetails = customUserDetailsService.loadUserByUsername(authenticationRequest.getEmail());
 
-        return new ResponseUnit(Status.SUCCESS, "", OAuthResponse.builder()
-                .accessToken(tokenService.generateToken(userDetails))
-                .build());
+        return new ResponseUnit(
+                Status.SUCCESS,
+                "",
+                new UserResponse(
+                        user.getId(),
+                        tokenService.generateToken(userDetails)
+                )
+        );
     }
 
     public void createWhiteListEmail(String email) {
