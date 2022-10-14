@@ -11,6 +11,7 @@ import com.unq.edu.li.pdesa.mentiUnq.models.Question;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.Status;
 import com.unq.edu.li.pdesa.mentiUnq.repositories.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,7 +68,7 @@ public class FormService {
         );
         Question tempQuestion = new Question();
 
-        if(question.getSlideId()!=null && question.getQuestion()!=null) {
+        if(question.getSlideId()!=null && (StringUtils.isNotBlank(question.getQuestion()))) {
             tempQuestion.setQuestion(question.getQuestion());
             tempQuestion.setForm(foundForm);
             tempQuestion.setSlide(slideRepository.findById(question.getSlideId()).orElseThrow(
