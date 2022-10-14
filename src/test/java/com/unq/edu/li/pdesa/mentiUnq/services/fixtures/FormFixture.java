@@ -14,6 +14,9 @@ public class FormFixture
 
 	private Form build()
 	{
-		return new Form(code, codeShare);
+		Form aForm = new Form();
+		aForm.setCode(code);
+		aForm.setCodeShare(codeShare);
+		return aForm;
 	}
 }

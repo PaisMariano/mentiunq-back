@@ -48,6 +48,7 @@ public class FormControllerTest extends AbstractControllerTest
 	public void whenCreateFormWithValidRequestThenControllerReturnsA200BadRequest() throws Exception
 	{
 		ResponseUnit responseUnit = ResponseUnitFixture.withOkResponseCreateForm();
+		Long userId = 1l;
 
 		when(formService.createForm(userId)).thenReturn(responseUnit);
 
