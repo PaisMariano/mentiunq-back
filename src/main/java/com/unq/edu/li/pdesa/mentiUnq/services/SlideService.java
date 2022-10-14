@@ -8,8 +8,6 @@ import com.unq.edu.li.pdesa.mentiUnq.repositories.SlideRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-
 @Service
 public class SlideService {
     private final SlideRepository slideRepository;
@@ -17,6 +15,7 @@ public class SlideService {
     public SlideService(SlideRepository slideRepository) {
         this.slideRepository = slideRepository;
     }
+
     @Transactional
     public ResponseUnit create(Slide slide) {
         Slide createdSlide = slideRepository.save(slide);

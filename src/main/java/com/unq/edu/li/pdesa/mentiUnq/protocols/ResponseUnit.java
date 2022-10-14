@@ -1,23 +1,38 @@
 package com.unq.edu.li.pdesa.mentiUnq.protocols;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.unq.edu.li.pdesa.mentiUnq.models.BaseModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+@Setter
+@Getter
+@Schema(name = "ResponseUnit", description = "ResponseUnit response with status, message and payload information.")
 public class ResponseUnit {
+
+    @JsonIgnore
     private Gson gson;
-    @Setter
-    @Getter
+
+    @Schema(description = "Internal status response", required = true)
     private Status status;
-    @Setter
-    @Getter
+
+    @Schema(description = "Additional message info", required = true)
     private String message;
-    @Setter
-    @Getter
+
+    @Schema(description = "Payload response in json format", required = true)
     private String payload;
 
     public ResponseUnit(Status status, String message, BaseModel payload) {
@@ -44,6 +59,20 @@ public class ResponseUnit {
 
     private void createGsonBuilder() {
         GsonBuilder gsonBuilder = new GsonBuilder();
-        this.gson = gsonBuilder.create();
+        this.gson = gsonBuilder.
+                excludeFieldsWithoutExposeAnnotation()
+                .registerTypeAdapter(LocalDateTime.class, new CustomLocalDateTimeSerializer())
+                .registerTypeAdapter(LocalDate.class, new CustomLocalDateTimeSerializer())
+                .create();
+    }
+}
+
+class CustomLocalDateTimeSerializer implements JsonSerializer<LocalDateTime>
+{
+
+    @Override
+    public JsonElement serialize(LocalDateTime fieldToSerialize, Type typeOfSrc, JsonSerializationContext context)
+    {
+        return fieldToSerialize == null ? null : new JsonPrimitive(fieldToSerialize.format(DateTimeFormatter.ISO_DATE_TIME));
     }
 }

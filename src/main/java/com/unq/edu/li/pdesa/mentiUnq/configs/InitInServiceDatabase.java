@@ -1,10 +1,11 @@
 package com.unq.edu.li.pdesa.mentiUnq.configs;
 
-import com.unq.edu.li.pdesa.mentiUnq.models.MentiUser;
+import com.unq.edu.li.pdesa.mentiUnq.exceptions.EntityNotFoundException;
 import com.unq.edu.li.pdesa.mentiUnq.models.Slide;
-import com.unq.edu.li.pdesa.mentiUnq.repositories.UserRepository;
 import com.unq.edu.li.pdesa.mentiUnq.services.FormService;
 import com.unq.edu.li.pdesa.mentiUnq.services.SlideService;
+import com.unq.edu.li.pdesa.mentiUnq.services.AuthService;
+import com.unq.edu.li.pdesa.mentiUnq.services.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,20 +15,29 @@ import javax.annotation.PostConstruct;
 public class InitInServiceDatabase {
     @Value("${spring.datasource.driverClassName:org.h2.Driver}")
     private String className;
-    private final UserRepository userRepository;
+    private final FormService formService;
     private final SlideService slideService;
+    private final AuthService authService;
+    private final UserService userService;
 
-    public InitInServiceDatabase(SlideService slideService, UserRepository userRepository){
-        this.userRepository = userRepository;
+    public InitInServiceDatabase(SlideService slideService,
+                                 AuthService authService,
+                                 FormService formService,
+                                 UserService userService) {
+
+        this.formService = formService;
         this.slideService = slideService;
+        this.authService = authService;
+        this.userService = userService;
     }
 
     @PostConstruct
     public void initialize() throws Exception {
         if (className.equals("org.h2.Driver")) {
             fireInitialSlides();
-
-            userRepository.save(MentiUser.builder().userName("pepito").build());
+            fireInitialUsers();
+            fireInitialMailWhitelist();
+            fireInitialForms();
         }
     }
 
@@ -44,5 +54,18 @@ public class InitInServiceDatabase {
         slideService.create(new Slide(10L, "Paragraph"));
         slideService.create(new Slide(11L, "Bullets"));
 
+    }
+    private void fireInitialUsers() throws Exception {
+        authService.processOAuthPostLogin("paismariano@gmail.com", "123456789");
+        authService.processOAuthPostLogin("pablo.g.marrero@gmail.com", "123456789");
+    }
+
+    private void fireInitialMailWhitelist() throws Exception {
+        authService.createWhiteListEmail("paismarianoa@gmail.com");
+    }
+
+    private void fireInitialForms() throws EntityNotFoundException
+    {
+        formService.createForm(1l);
     }
 }
