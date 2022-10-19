@@ -81,27 +81,50 @@ public class FormService {
         return new ResponseUnit(Status.SUCCESS, "", questionRepository.save(tempQuestion));
     }
 
+    public ResponseUnit getAnswersByQuestionId(Long questionId) {
+        return new ResponseUnit(Status.SUCCESS, "", answerRepository.findAllByQuestionId(questionId));
+    }
+
     @Transactional
     public ResponseUnit addAnswer(Long formId, Long questionId, AnswerRequest answer) throws Exception {
+        //validate existence
         getForm(formId);
+
+        return new ResponseUnit(Status.SUCCESS, "", addAnswer(questionId, answer, 0));
+    }
+
+    @Transactional
+    public ResponseUnit addAnswer(String codeShare, Long questionId, AnswerRequest answer) throws Exception {
+        //validate existence
+        getForm(codeShare);
+
+        return new ResponseUnit(Status.SUCCESS, "", addAnswer(questionId, answer, 1));
+    }
+
+    private MentiOption addAnswer(Long questionId, AnswerRequest answer, Integer score) throws Exception {
         Question foundQuestion = getQuestion(questionId);
 
         MentiOption tempAnswer = new MentiOption();
 
         if(answer.getOption()!=null) {
             tempAnswer.setName(answer.getOption());
-            tempAnswer.setScore(0);
+            tempAnswer.setScore(score);
             tempAnswer.setQuestion(foundQuestion);
         } else {
             throw BadRequestException.createWith("");
         }
 
-        return new ResponseUnit(Status.SUCCESS, "", answerRepository.save(tempAnswer));
+        return answerRepository.save(tempAnswer);
     }
 
     private Form getForm(Long formId) throws EntityNotFoundException {
         return formRepository.findById(formId).orElseThrow(
                 ()-> EntityNotFoundException.createWith(formId.toString())
+        );
+    }
+    private Form getForm(String codeShare) throws EntityNotFoundException {
+        return formRepository.findByCodeShare(codeShare).orElseThrow(
+                ()-> EntityNotFoundException.createWith(codeShare)
         );
     }
 

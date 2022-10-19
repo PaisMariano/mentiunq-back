@@ -78,4 +78,19 @@ public class FormController {
         return ResponseEntity.ok(createdForm);
     }
 
+    @PreAuthorize("hasAuthority('USER')")
+    @Operation(summary = "Get all answers by question id", description = "Get all answers from one particular question", operationId = "getAllAnswers")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+    })
+    @GetMapping(path = "/question/{id}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> getById(@Parameter(description = "question Id", required = true)@PathVariable("id") Long id) throws Exception {
+        ResponseUnit forms = formService.getAnswersByQuestionId(id);
+
+        return ResponseEntity.ok(forms);
+    }
+
 }
