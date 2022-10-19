@@ -8,19 +8,5 @@ import java.util.List;
 
 public interface AnswerRepository extends CrudRepository<MentiOption, Long> {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     List<MentiOption> findAllByQuestionId(Long questionId);
 }
