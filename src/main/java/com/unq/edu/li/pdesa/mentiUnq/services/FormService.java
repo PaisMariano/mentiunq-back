@@ -8,7 +8,6 @@ import com.unq.edu.li.pdesa.mentiUnq.models.Form;
 import com.unq.edu.li.pdesa.mentiUnq.models.MentiOption;
 import com.unq.edu.li.pdesa.mentiUnq.models.MentiUser;
 import com.unq.edu.li.pdesa.mentiUnq.models.Question;
-import com.unq.edu.li.pdesa.mentiUnq.models.Slide;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.Status;
 import com.unq.edu.li.pdesa.mentiUnq.repositories.*;
@@ -18,9 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -117,25 +114,46 @@ public class FormService {
     @Transactional
     public ResponseUnit deleteQuestionById(Long formId, Long questionId) throws EntityNotFoundException
     {
-        Form aForm = formRepository.findById(formId).orElseThrow(
-                () -> EntityNotFoundException.createWith(formId.toString())
-        );
+        Form aForm = getForm(formId);
+        Question question =  getQuestion(questionId);
 
-        Question question =  questionRepository.findById(questionId).orElseThrow(
-                () -> EntityNotFoundException.createWith(questionId.toString())
-        );
-
-        List<Question> newQuestions = new ArrayList<>();
+        //List<Question> newQuestions = new ArrayList<>();
 
         //TODO: ver si hay una manera más óptima de borrar la pregunta, aunque no recorre la lista completamente, si lo encuentra terminar de iterar
         aForm.getQuestions().removeIf(aQuestion -> aQuestion.getId().equals(questionId));
 
-        aForm.setQuestions(newQuestions);
+        //aForm.setQuestions(newQuestions);
 
-        formRepository.save(aForm);
-
+        //formRepository.save(aForm);
         questionRepository.delete(question);
 
-        return new ResponseUnit(Status.SUCCESS, "", String.format("Question with questionId %s deleted successful", questionId) );
+        return new ResponseUnit(Status.SUCCESS, "", String.format("Question with id %s from Form with id %s deleted successful", questionId, formId) );
+    }
+
+    public ResponseUnit deleteOptionById(Long formId, Long optionId) throws EntityNotFoundException
+    {
+        Form aForm = getForm(formId);
+
+        MentiOption mentiOption = answerRepository.findById(optionId).orElseThrow(
+                ()-> EntityNotFoundException.createWith(optionId.toString())
+        );
+
+        //aForm.getQuestions().forEach(aQuestion -> deleteMentiOption(aQuestion, optionId));
+
+        //formRepository.save(aForm);
+        answerRepository.delete(mentiOption);
+        return new ResponseUnit(Status.SUCCESS, "", String.format("Question with id %s from Form with id %s deleted successful", optionId, formId) );
+    }
+
+    private void deleteMentiOption(Question aQuestion, Long optionId)
+    {
+        aQuestion.getMentiOptions().removeIf(mentiOption -> mentiOption.getId().equals(optionId));
+    }
+
+    public ResponseUnit getQuestionsById(Long formId) throws EntityNotFoundException
+    {
+        Form aForm = getForm(formId);
+
+        return new ResponseUnit(Status.SUCCESS, "", aForm.getQuestions() );
     }
 }
