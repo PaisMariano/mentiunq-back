@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface FormRepository extends CrudRepository<Form, Long> {
     Optional<Form> findByCodeShare(String codeShare);
+    Optional<Form> findByCode(String code);
 }
