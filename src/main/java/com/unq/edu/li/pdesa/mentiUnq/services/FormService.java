@@ -125,14 +125,6 @@ public class FormService {
         if (aForm.getQuestions().size() == 1)
             throw BadRequestException.createWith(formId.toString());
 
-        //List<Question> newQuestions = new ArrayList<>();
-
-        //TODO: ver si hay una manera más óptima de borrar la pregunta, aunque no recorre la lista completamente, si lo encuentra terminar de iterar
-        aForm.getQuestions().removeIf(aQuestion -> aQuestion.getId().equals(questionId));
-
-        //aForm.setQuestions(newQuestions);
-
-        //formRepository.save(aForm);
         questionRepository.delete(question);
 
         return new ResponseUnit(Status.SUCCESS, "", String.format("Question with id %s from Form with id %s deleted successful", questionId, formId) );
@@ -146,9 +138,6 @@ public class FormService {
                 ()-> EntityNotFoundException.createWith(optionId.toString())
         );
 
-        //aForm.getQuestions().forEach(aQuestion -> deleteMentiOption(aQuestion, optionId));
-
-        //formRepository.save(aForm);
         answerRepository.delete(mentiOption);
         return new ResponseUnit(Status.SUCCESS, "", String.format("Question with id %s from Form with id %s deleted successful", optionId, formId) );
     }
@@ -185,13 +174,13 @@ public class FormService {
         return answerRepository.save(tempAnswer);
     }
 
-    private Form getForm(Long formId) throws EntityNotFoundException {
+    private Form getFormById(Long formId) throws EntityNotFoundException {
         return formRepository.findById(formId).orElseThrow(
                 ()-> EntityNotFoundException.createWith(formId.toString())
         );
     }
 
-    private Form getForm(String codeShare) throws EntityNotFoundException {
+    private Form getFormByCodeShare(String codeShare) throws EntityNotFoundException {
         return formRepository.findByCodeShare(codeShare).orElseThrow(
                 ()-> EntityNotFoundException.createWith(codeShare)
         );
