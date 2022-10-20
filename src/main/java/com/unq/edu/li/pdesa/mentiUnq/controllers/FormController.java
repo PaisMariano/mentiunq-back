@@ -51,8 +51,7 @@ public class FormController {
 
     @PatchMapping(path = "/{formId}", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity update(
-            @Parameter(description = "Form body", required = true)
-            @PathVariable("formId") Long id,
+            @Parameter(description = "Form body", required = true)@PathVariable("formId") Long id,
             @RequestBody QuestionRequest question) throws Exception {
         ResponseUnit createdForm = formService.addQuestion(id, question);
 
@@ -69,14 +68,15 @@ public class FormController {
     })
     @PatchMapping(path = "/{formId}/question/{questionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity update(
-            @Parameter(description = "Answer body", required = true)
-            @PathVariable("formId") Long formId,
+            @Parameter(description = "Answer body", required = true) @PathVariable("formId") Long formId,
             @PathVariable("questionId") Long questionId,
-            @RequestBody AnswerRequest answer) throws Exception {
+            @RequestBody AnswerRequest answer
+    ) throws Exception {
         ResponseUnit createdForm = formService.addAnswer(formId, questionId, answer);
 
         return ResponseEntity.ok(createdForm);
     }
+
 
     @PreAuthorize("hasAuthority('USER')")
     @Operation(summary = "Get all answers by question id", description = "Get all answers from one particular question", operationId = "getAllAnswers")
@@ -93,4 +93,60 @@ public class FormController {
         return ResponseEntity.ok(forms);
     }
 
+    @PreAuthorize("hasAuthority('USER')")
+    @Operation(summary = "Delete question by id", description = "Delete a question from database.", operationId = "deleteQuestionById")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+    })
+    @DeleteMapping(path = "/{formId}{questionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> deleteQuestionById(@Parameter(description = "Slide Id", required = true)@PathVariable("formId") Long formId,
+                                                @Parameter(description = "Question Id", required = true)@RequestParam("questionId") Long questionId) throws Exception {
+
+        return ResponseEntity.ok(formService.deleteQuestionById(formId, questionId));
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @Operation(summary = "Delete option by id", description = "Delete a question from database.", operationId = "deleteOptionById")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+    })
+    @DeleteMapping(path = "/{formId}/option{optionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> deleteOptionById(@Parameter(description = "Slide Id", required = true)@PathVariable("formId") Long formId,
+                                              @Parameter(description = "MentiOption Id", required = true)@RequestParam("optionId") Long optionId) throws Exception {
+
+        return ResponseEntity.ok(formService.deleteOptionById(formId, optionId));
+    }
+
+
+    @PreAuthorize("hasAuthority('USER')")
+    @Operation(summary = "Get questions by form id", description = "Get questions by form id", operationId = "getQuestionsById")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+    })
+    @GetMapping(path = "/{formId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> getQuestionsById(@Parameter(description = "user Id", required = true)@PathVariable("formId") Long formId) throws Exception {
+        return ResponseEntity.ok(formService.getQuestionsById(formId));
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @Operation(summary = "Get form by code", description = "Get form by code", operationId = "getFormByCode")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+    })
+    @GetMapping(path = "/code/{code}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> getFormByCode(@Parameter(description = "Code", required = true)@PathVariable("code") String code) throws Exception {
+        return ResponseEntity.ok(formService.getFormByCode(code));
+    }
 }

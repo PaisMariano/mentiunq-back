@@ -8,6 +8,7 @@ import com.unq.edu.li.pdesa.mentiUnq.models.Form;
 import com.unq.edu.li.pdesa.mentiUnq.models.MentiOption;
 import com.unq.edu.li.pdesa.mentiUnq.models.MentiUser;
 import com.unq.edu.li.pdesa.mentiUnq.models.Question;
+import com.unq.edu.li.pdesa.mentiUnq.models.Slide;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.Status;
 import com.unq.edu.li.pdesa.mentiUnq.repositories.*;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -58,7 +60,16 @@ public class FormService {
         form.setUpdateDate(LocalDateTime.now());
         form.setMentiUser(user);
 
-        return new ResponseUnit(Status.SUCCESS, "", formRepository.save(form));
+        form = formRepository.save(form);
+
+        Question question = new Question();
+        question.setSlide(getSlide(1l));
+        question.setQuestion("Multiple Choice");
+        question.setForm(form);
+
+        form.setQuestions(Arrays.asList(questionRepository.save(question)));
+
+        return new ResponseUnit(Status.SUCCESS, "", form);
     }
 
     @Transactional
@@ -71,14 +82,19 @@ public class FormService {
         if(question.getSlideId()!=null && (StringUtils.isNotBlank(question.getQuestion()))) {
             tempQuestion.setQuestion(question.getQuestion());
             tempQuestion.setForm(foundForm);
-            tempQuestion.setSlide(slideRepository.findById(question.getSlideId()).orElseThrow(
-                    () -> EntityNotFoundException.createWith(question.getSlideId().toString())
-            ));
+            tempQuestion.setSlide(getSlide(question.getSlideId()));
         } else {
             throw BadRequestException.createWith("");
         }
 
         return new ResponseUnit(Status.SUCCESS, "", questionRepository.save(tempQuestion));
+    }
+
+    private Slide getSlide(Long questionId) throws EntityNotFoundException
+    {
+        return slideRepository.findById(questionId).orElseThrow(
+                () -> EntityNotFoundException.createWith(questionId.toString())
+        );
     }
 
     public ResponseUnit getAnswersByQuestionId(Long questionId) {
@@ -101,6 +117,47 @@ public class FormService {
         return new ResponseUnit(Status.SUCCESS, "", addAnswer(questionId, answer, 1));
     }
 
+    @Transactional
+    public ResponseUnit deleteQuestionById(Long formId, Long questionId) throws EntityNotFoundException, BadRequestException
+    {
+        Form aForm = getForm(formId);
+        Question question =  getQuestion(questionId);
+        if (aForm.getQuestions().size() == 1)
+            throw BadRequestException.createWith(formId.toString());
+
+        questionRepository.delete(question);
+
+        return new ResponseUnit(Status.SUCCESS, "", String.format("Question with id %s from Form with id %s deleted successful", questionId, formId) );
+    }
+
+    public ResponseUnit deleteOptionById(Long formId, Long optionId) throws EntityNotFoundException
+    {
+        Form aForm = getForm(formId);
+
+        MentiOption mentiOption = answerRepository.findById(optionId).orElseThrow(
+                ()-> EntityNotFoundException.createWith(optionId.toString())
+        );
+
+        answerRepository.delete(mentiOption);
+        return new ResponseUnit(Status.SUCCESS, "", String.format("Question with id %s from Form with id %s deleted successful", optionId, formId) );
+    }
+
+    public ResponseUnit getQuestionsById(Long formId) throws EntityNotFoundException
+    {
+        Form aForm = getForm(formId);
+
+        return new ResponseUnit(Status.SUCCESS, "", aForm.getQuestions() );
+    }
+
+    public ResponseUnit getFormByCode(String code) throws EntityNotFoundException
+    {
+        Form aForm = formRepository.findByCode(code).orElseThrow(
+                ()-> EntityNotFoundException.createWith(code)
+        );
+
+        return new ResponseUnit(Status.SUCCESS, "", aForm);
+    }
+
     private MentiOption addAnswer(Long questionId, AnswerRequest answer, Integer score) throws Exception {
         Question foundQuestion = getQuestion(questionId);
 
@@ -117,12 +174,13 @@ public class FormService {
         return answerRepository.save(tempAnswer);
     }
 
-    private Form getForm(Long formId) throws EntityNotFoundException {
+    private Form getFormById(Long formId) throws EntityNotFoundException {
         return formRepository.findById(formId).orElseThrow(
                 ()-> EntityNotFoundException.createWith(formId.toString())
         );
     }
-    private Form getForm(String codeShare) throws EntityNotFoundException {
+
+    private Form getFormByCodeShare(String codeShare) throws EntityNotFoundException {
         return formRepository.findByCodeShare(codeShare).orElseThrow(
                 ()-> EntityNotFoundException.createWith(codeShare)
         );
@@ -133,6 +191,10 @@ public class FormService {
                 ()-> EntityNotFoundException.createWith(questionId.toString())
         );
     }
+
+    private void deleteMentiOption(Question aQuestion, Long optionId)
+    {
+        aQuestion.getMentiOptions().removeIf(mentiOption -> mentiOption.getId().equals(optionId));
+    }
+
 }
-
-

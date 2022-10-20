@@ -62,6 +62,7 @@ public class InitInServiceDatabase {
 
     private void fireInitialMailWhitelist() throws Exception {
         authService.createWhiteListEmail("paismarianoa@gmail.com");
+        authService.createWhiteListEmail("frasespuras@gmail.com");
     }
 
     private void fireInitialForms() throws EntityNotFoundException
