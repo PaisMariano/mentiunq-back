@@ -13,10 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Answers controller without security for clients .")
 @Controller
@@ -41,6 +38,23 @@ public class AnswerController {
             @RequestBody AnswerRequest answerRequest) throws Exception {
 
         ResponseUnit createdAnswer = formService.addAnswer(codeShare, questionId, answerRequest);
+
+        return ResponseEntity.ok(createdAnswer);
+    }
+
+    @Operation(summary = "gets a question from formCode", description = "gets a question from formCode", operationId = "getQuestionByCodeShare")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+    })
+    @GetMapping(path = "/form/{codeShare}/question/current", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> getQuestionByCodeShare(
+            @Parameter(description = "code Share", required = true)
+            @PathVariable("codeShare") String codeShare) throws Exception {
+
+        ResponseUnit createdAnswer = formService.getQuestionByCodeShare(codeShare);
 
         return ResponseEntity.ok(createdAnswer);
     }

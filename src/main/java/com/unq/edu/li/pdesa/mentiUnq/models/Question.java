@@ -22,6 +22,9 @@ public class Question extends BaseModel {
     @Expose
     private String question;
 
+    @Expose
+    private Boolean isCurrent;
+
     @OneToOne
     @JoinColumn(name = "slide_id")
     private Slide slide;
