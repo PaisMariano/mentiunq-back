@@ -250,4 +250,18 @@ public class FormService {
 
 		return new ResponseUnit(Status.SUCCESS, "", formRepository.save(aForm));
 	}
+
+	public ResponseUnit vote(String codeShare, Long questionId, Long optionId) throws EntityNotFoundException
+	{
+		Form aForm = getFormByCodeShare(codeShare);
+		Question aQuestion = getQuestion(questionId);
+
+		aQuestion.getMentiOptions().forEach(mentiOption -> {
+			if(mentiOption.getId() == optionId){
+				mentiOption.setScore(mentiOption.getScore() + 1);
+			}
+		});
+
+		return new ResponseUnit(Status.SUCCESS, "", formRepository.save(aForm));
+	}
 }
