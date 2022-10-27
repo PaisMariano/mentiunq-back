@@ -42,20 +42,38 @@ public class AnswerController {
         return ResponseEntity.ok(createdAnswer);
     }
 
-    @Operation(summary = "gets a question from formCode", description = "gets a question from formCode", operationId = "getQuestionByCodeShare")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
-            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
-            @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
-    })
-    @GetMapping(path = "/form/{codeShare}/question/current", produces = { MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<?> getQuestionByCodeShare(
-            @Parameter(description = "code Share", required = true)
-            @PathVariable("codeShare") String codeShare) throws Exception {
+	@Operation(summary = "gets a question from formCode", description = "gets a question from formCode", operationId = "getQuestionByCodeShare")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+	})
+	@GetMapping(path = "/form/{codeShare}/question/current", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> getQuestionByCodeShare(
+			@Parameter(description = "code Share", required = true)
+			@PathVariable("codeShare") String codeShare) throws Exception {
 
-        ResponseUnit createdAnswer = formService.getQuestionByCodeShare(codeShare);
+		ResponseUnit createdAnswer = formService.getQuestionByCodeShare(codeShare);
 
-        return ResponseEntity.ok(createdAnswer);
-    }
+		return ResponseEntity.ok(createdAnswer);
+	}
+
+	@Operation(summary = "Vote", description = "Adds one to score", operationId = "vote")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+	})
+	@PostMapping(path = "/form/{codeShare}/question/{questionId}/option/{optionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> vote(
+			@Parameter(description = "code Share", required = true) @PathVariable("codeShare") String codeShare,
+			@Parameter(description = "questionId", required = true)  @PathVariable("questionId") Long questionId,
+			@Parameter(description = "optionId", required = true)  @PathVariable("optionId") Long optionId) throws Exception {
+
+		ResponseUnit createdAnswer = formService.vote(codeShare, questionId, optionId);
+
+		return ResponseEntity.ok(createdAnswer);
+	}
 }
