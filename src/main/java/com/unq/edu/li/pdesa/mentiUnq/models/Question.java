@@ -33,7 +33,7 @@ public class Question extends BaseModel {
     @JoinColumn(name = "form_id")
     private Form form;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", cascade = {CascadeType.ALL})
     @Expose
     private List<MentiOption> mentiOptions;
 }

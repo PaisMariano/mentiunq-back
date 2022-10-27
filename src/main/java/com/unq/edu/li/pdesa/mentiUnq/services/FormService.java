@@ -14,10 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class FormService {
@@ -81,6 +83,7 @@ public class FormService {
             tempQuestion.setQuestion(question.getQuestion());
             tempQuestion.setForm(foundForm);
             tempQuestion.setSlide(getSlide(question.getSlideId()));
+			tempQuestion.setIsCurrent(false);
         } else {
             throw BadRequestException.createWith("");
         }
@@ -123,7 +126,25 @@ public class FormService {
         if (aForm.getQuestions().size() == 1)
             throw BadRequestException.createWith(formId.toString());
 
-        questionRepository.delete(question);
+		List<Question> questions = aForm.getQuestions();
+
+		List<Question> tempList = new ArrayList<>();
+
+		for(Question _question : questions){
+			if(_question.getId() != questionId){
+				tempList.add(_question);
+			}else{
+				questionRepository.delete(_question);
+			}
+		}
+
+		aForm.setQuestions(tempList);
+
+		if (question.getIsCurrent()){
+			aForm.getQuestions().get(0).setIsCurrent(true);
+		}
+
+		formRepository.save(aForm);
 
         return new ResponseUnit(Status.SUCCESS, "", String.format("Question with id %s from Form with id %s deleted successful", questionId, formId) );
     }
@@ -211,4 +232,22 @@ public class FormService {
         aQuestion.getMentiOptions().removeIf(mentiOption -> mentiOption.getId().equals(optionId));
     }
 
+	public ResponseUnit updateCurrentQuestion(Long formId, Long questionId) throws EntityNotFoundException
+	{
+		Form aForm = getFormById(formId);
+		Question aQuestion = getQuestion(questionId);
+
+		List<Question> questions = aForm.getQuestions();
+
+		questions.forEach(question -> {
+			question.setIsCurrent(false);
+
+			if(question.getId() == questionId){
+				aQuestion.setIsCurrent(true);
+			}
+		});
+
+
+		return new ResponseUnit(Status.SUCCESS, "", formRepository.save(aForm));
+	}
 }
