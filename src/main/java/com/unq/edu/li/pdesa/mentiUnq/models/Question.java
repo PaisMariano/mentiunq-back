@@ -22,6 +22,9 @@ public class Question extends BaseModel {
     @Expose
     private String question;
 
+    @Expose
+    private Boolean isCurrent;
+
     @OneToOne
     @JoinColumn(name = "slide_id")
     private Slide slide;
@@ -30,7 +33,7 @@ public class Question extends BaseModel {
     @JoinColumn(name = "form_id")
     private Form form;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", cascade = {CascadeType.ALL})
     @Expose
     private List<MentiOption> mentiOptions;
 }
