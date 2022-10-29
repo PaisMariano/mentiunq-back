@@ -1,6 +1,8 @@
 # mentiunq-back
 Repositorio back-end para mentiUNQ
 
+| __JaCoCo Test Coverage__ | [![coverage](https://raw.githubusercontent.com/PaisMariano/mentiunq-back/badges/jacoco.svg)](https://github.com/PaisMariano/mentiunq-back/actions/workflows/build.yml) [![branches coverage](https://raw.githubusercontent.com/PaisMariano/mentiunq-back/badges/branches.svg)](https://github.com/PaisMariano/mentiunq-back/actions/workflows/build.yml) |
+
 ### Requerimientos recomendados:
 
     JDK 1.8
