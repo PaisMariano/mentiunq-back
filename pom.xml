@@ -156,6 +156,7 @@
                     </includes>
                     <excludes>
                         <exclude>com/unq/edu/li/pdesa/mentiUnq/**/Application.class</exclude>
+                        <exclude>com/unq/edu/li/pdesa/mentiUnq/configs/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>

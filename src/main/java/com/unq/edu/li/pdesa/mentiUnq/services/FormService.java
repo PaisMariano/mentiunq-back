@@ -158,7 +158,7 @@ public class FormService {
         );
 
         answerRepository.delete(mentiOption);
-        return new ResponseUnit(Status.SUCCESS, "", String.format("Question with id %s from Form with id %s deleted successful", optionId, formId) );
+        return new ResponseUnit(Status.SUCCESS, "", String.format("Option with id %s from Form with id %s deleted successful", optionId, formId) );
     }
 
     public ResponseUnit getQuestionsById(Long formId) throws EntityNotFoundException

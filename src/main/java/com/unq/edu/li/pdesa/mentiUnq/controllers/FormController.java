@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class FormController {
     private final FormService formService;
 
+    @Autowired
     public FormController(FormService formService) { this.formService = formService; }
 
     @PreAuthorize("hasAuthority('USER')")
@@ -51,8 +53,8 @@ public class FormController {
 
     @PatchMapping(path = "/{formId}", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity update(
-            @Parameter(description = "Form body", required = true)@PathVariable("formId") Long id,
-            @RequestBody QuestionRequest question) throws Exception {
+            @Parameter(description = "Formd id", required = true) @PathVariable("formId") Long id,
+            @Parameter(description = "Form body", required = true) @RequestBody QuestionRequest question) throws Exception {
         ResponseUnit createdForm = formService.addQuestion(id, question);
 
         return ResponseEntity.ok(createdForm);
@@ -68,9 +70,9 @@ public class FormController {
     })
     @PatchMapping(path = "/{formId}/question/{questionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity update(
-            @Parameter(description = "Answer body", required = true) @PathVariable("formId") Long formId,
-            @PathVariable("questionId") Long questionId,
-            @RequestBody AnswerRequest answer
+            @Parameter(description = "Form ID", required = true) @PathVariable("formId") Long formId,
+            @Parameter(description = "Question id", required = true) @PathVariable("questionId") Long questionId,
+            @Parameter(description = "Answer request", required = true) @RequestBody AnswerRequest answer
     ) throws Exception {
         ResponseUnit createdForm = formService.addAnswer(formId, questionId, answer);
 
@@ -102,7 +104,7 @@ public class FormController {
             @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
     })
     @DeleteMapping(path = "/{formId}{questionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<?> deleteQuestionById(@Parameter(description = "Slide Id", required = true)@PathVariable("formId") Long formId,
+    public ResponseEntity<?> deleteQuestionById(@Parameter(description = "Form Id", required = true)@PathVariable("formId") Long formId,
                                                 @Parameter(description = "Question Id", required = true)@RequestParam("questionId") Long questionId) throws Exception {
 
         return ResponseEntity.ok(formService.deleteQuestionById(formId, questionId));
