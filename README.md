@@ -1,5 +1,6 @@
 # mentiunq-back
 Repositorio back-end para mentiUNQ
+[![Tests](https://github.com/PaisMariano/mentiunq-back/actions/workflows/check.yml/badge.svg)](https://github.com/PaisMariano/mentiunq-back/actions/workflows/check.yml)
 
 ### Requerimientos recomendados:
 

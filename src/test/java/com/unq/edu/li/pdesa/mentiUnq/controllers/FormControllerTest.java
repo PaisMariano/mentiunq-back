@@ -28,6 +28,8 @@ public class FormControllerTest extends AbstractControllerTest
 	@Mock
 	private FormService formService;
 
+	Long userId = 1l;
+
 	@BeforeEach
 	public void setUp(){
 		init(controller);
@@ -36,7 +38,7 @@ public class FormControllerTest extends AbstractControllerTest
 	@Test
 	public void whenCreateFormWithoutRequestThenControllerReturnsA400BadRequest() throws Exception
 	{
-		final MvcResult result = mockMvc.perform(post("/api/form/form")
+		final MvcResult result = mockMvc.perform(post("/api/form/user/{userId}{userId}", userId, "userId")
 						.accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest()).andReturn();
@@ -45,14 +47,14 @@ public class FormControllerTest extends AbstractControllerTest
 	}
 
 	@Test
-	public void whenCreateFormWithValidRequestThenControllerReturnsA200BadRequest() throws Exception
+	public void whenCreateFormWithValidRequestThenControllerReturnsA200Ok() throws Exception
 	{
 		ResponseUnit responseUnit = ResponseUnitFixture.withOkResponseCreateForm();
 		Long userId = 1l;
 
 		when(formService.createForm(userId)).thenReturn(responseUnit);
 
-		final MvcResult result = mockMvc.perform(post("/api/form/form")
+		final MvcResult result = mockMvc.perform(post("/api/form/user/{userId}", userId)
 						.content(asJsonString(responseUnit))
 						.accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON))
