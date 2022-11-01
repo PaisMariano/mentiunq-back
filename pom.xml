@@ -11,7 +11,7 @@
 	<groupId>com.unq.edu.li.pdesa</groupId>
 	<artifactId>mentiUnq</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>mentiUnq</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -124,15 +124,13 @@
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>0.8.2</version>
+
 					<executions>
 						<execution>
 							<id>pre-unit-test</id>
 							<goals>
 								<goal>prepare-agent</goal>
 							</goals>
-							<configuration>
-								<destFile>${project.build.directory}/jacoco.exec</destFile>
-							</configuration>
 						</execution>
 						<execution>
 							<id>post-unit-test</id>
@@ -140,19 +138,19 @@
 							<goals>
 								<goal>report</goal>
 							</goals>
-							<configuration>
-								<dataFile>${project.build.directory}/jacoco.exec</dataFile>
-								<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
-							</configuration>
 						</execution>
 					</executions>
 				</plugin>
+
 
 				<!-- Set up surefire to run just unit tests and take-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.22.0</version>
+					<configuration>
+						<argLine>${argLine}</argLine>
+					</configuration>
 				</plugin>
 
 				<plugin>
