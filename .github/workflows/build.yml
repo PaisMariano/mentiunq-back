@@ -19,7 +19,7 @@ jobs:
         run: mvn verify jacoco:report
 
       - name: Add coverage to PR
-        id: jacoco madrapps
+        id: jacoco-madrapps
         uses: madrapps/jacoco-report@v1.3
         with:
           paths: ${{ github.workspace }}/target/site/jacoco/jacoco.xml
@@ -28,7 +28,7 @@ jobs:
           min-coverage-changed-files: 70
 
       - name: Generate Jacoco Badge
-        id: jacoco cicirello
+        id: jacoco-cicirello
         uses: cicirello/jacoco-badge-generator@v2
         with:
           generate-branches-badge: true
