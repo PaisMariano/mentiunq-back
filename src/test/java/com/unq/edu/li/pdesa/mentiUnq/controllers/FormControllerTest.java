@@ -254,10 +254,4 @@ public class FormControllerTest extends AbstractControllerTest
 		assertNotNull(response);
 		verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
 	}
-
-	private void verifyReturnedAndExpectedResponse(ResponseUnit returnedResponse, ResponseUnit expectedResponse) {
-		assertEquals(expectedResponse.getStatus(), returnedResponse.getStatus());
-		assertEquals(expectedResponse.getMessage(), returnedResponse.getMessage());
-		assertEquals(expectedResponse.getPayload(), returnedResponse.getPayload());
-	}
 }

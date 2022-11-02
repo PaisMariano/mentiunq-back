@@ -152,12 +152,13 @@
                 <version>0.8.2</version>
                 <configuration>
                     <includes>
-                        <include>com/unq/edu/li/pdesa/mentiUnq/**/*.*</include>
+                        <include>com/unq/edu/**/*.*</include>
                     </includes>
                     <excludes>
-                        <exclude>com/unq/edu/li/pdesa/mentiUnq/**/Application.class</exclude>
-                        <exclude>com/unq/edu/li/pdesa/mentiUnq/configs/**/*</exclude>
-                        <exclude>com/unq/edu/li/pdesa/mentiUnq/protocols/**/*</exclude>
+                        <exclude>com/unq/edu/li/**/MentiUnqApplication.class</exclude>
+                        <exclude>com/unq/edu/li/**/ServletInitializer.class</exclude>
+                        <exclude>com/unq/edu/li/**/configs/**/*.*</exclude>
+                        <exclude>com/unq/edu/li/**/protocols/**/*.*</exclude>
                     </excludes>
                 </configuration>
                 <executions>

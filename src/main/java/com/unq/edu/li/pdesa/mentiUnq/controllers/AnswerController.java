@@ -32,10 +32,9 @@ public class AnswerController {
     })
     @PostMapping(path = "/form/{codeShare}/question/{questionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<?> create(
-            @Parameter(description = "code Share", required = true)
-            @PathVariable("codeShare") String codeShare,
-            @PathVariable("questionId") Long questionId,
-            @RequestBody AnswerRequest answerRequest) throws Exception {
+            @Parameter(description = "code Share", required = true) @PathVariable("codeShare") String codeShare,
+			@Parameter(description = "question Id", required = true) @PathVariable("questionId") Long questionId,
+			@Parameter(description = "Answer Request", required = true) @RequestBody AnswerRequest answerRequest) throws Exception {
 
         ResponseUnit createdAnswer = formService.addAnswer(codeShare, questionId, answerRequest);
 
@@ -51,8 +50,7 @@ public class AnswerController {
 	})
 	@GetMapping(path = "/form/{codeShare}/question/current", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<?> getQuestionByCodeShare(
-			@Parameter(description = "code Share", required = true)
-			@PathVariable("codeShare") String codeShare) throws Exception {
+			@Parameter(description = "code Share", required = true) @PathVariable("codeShare") String codeShare) throws Exception {
 
 		ResponseUnit createdAnswer = formService.getQuestionByCodeShare(codeShare);
 
@@ -72,8 +70,8 @@ public class AnswerController {
 			@Parameter(description = "questionId", required = true)  @PathVariable("questionId") Long questionId,
 			@Parameter(description = "optionId", required = true)  @PathVariable("optionId") Long optionId) throws Exception {
 
-		ResponseUnit createdAnswer = formService.vote(codeShare, questionId, optionId);
+		ResponseUnit responseVoted = formService.vote(codeShare, questionId, optionId);
 
-		return ResponseEntity.ok(createdAnswer);
+		return ResponseEntity.ok(responseVoted);
 	}
 }
