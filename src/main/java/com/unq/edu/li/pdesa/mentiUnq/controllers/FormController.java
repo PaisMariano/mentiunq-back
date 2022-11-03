@@ -134,9 +134,9 @@ public class FormController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
             @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
     })
-    @DeleteMapping(path = "/{formId}{questionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    @DeleteMapping(path = "/{formId}/question/{questionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<?> deleteQuestionById(@Parameter(description = "Form Id", required = true)@PathVariable("formId") Long formId,
-                                                @Parameter(description = "Question Id", required = true)@RequestParam("questionId") Long questionId) throws Exception {
+                                                @Parameter(description = "Question Id", required = true)@PathVariable("questionId") Long questionId) throws Exception {
 
         return ResponseEntity.ok(formService.deleteQuestionById(formId, questionId));
     }

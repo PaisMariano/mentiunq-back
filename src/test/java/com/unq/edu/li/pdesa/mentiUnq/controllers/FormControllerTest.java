@@ -154,7 +154,7 @@ public class FormControllerTest extends AbstractControllerTest
 
 		when(formService.deleteQuestionById(anyLong(), anyLong())).thenReturn(responseUnit);
 
-		final MvcResult result = mockMvc.perform(delete("/api/form/{formId}?questionId={questionId}", formId, questionId)
+		final MvcResult result = mockMvc.perform(delete("/api/form/{formId}/question/{questionId}", formId, questionId)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 
