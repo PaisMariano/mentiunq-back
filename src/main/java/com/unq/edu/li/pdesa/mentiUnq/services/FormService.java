@@ -1,6 +1,7 @@
 package com.unq.edu.li.pdesa.mentiUnq.services;
 
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.AnswerRequest;
+import com.unq.edu.li.pdesa.mentiUnq.controllers.request.FormNameRequest;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.QuestionRequest;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.BadRequestException;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.EntityNotFoundException;
@@ -107,6 +108,13 @@ public class FormService {
         getFormByCodeShare(codeShare);
 
         return new ResponseUnit(Status.SUCCESS, "", addAnswer(questionId, answer, 1));
+    }
+
+    public Object deleteFormById(Long formId) throws EntityNotFoundException {
+        Form aForm = getFormById(formId);
+        formRepository.delete(aForm);
+
+        return new ResponseUnit(Status.SUCCESS, "", String.format("Form with id %s deleted successfully", formId));
     }
 
     @Transactional
@@ -255,10 +263,19 @@ public class FormService {
         );
     }
 
+
     private Slide getSlide(Long questionId) throws EntityNotFoundException
-    {
-        return slideRepository.findById(questionId).orElseThrow(
-                () -> EntityNotFoundException.createWith(questionId.toString())
-        );
+	{
+		return slideRepository.findById(questionId).orElseThrow(
+				() -> EntityNotFoundException.createWith(questionId.toString())
+		);
+	}
+
+    public ResponseUnit renameForm(Long formId, FormNameRequest nameRequest) throws EntityNotFoundException {
+        Form aForm = getFormById(formId);
+
+        aForm.setName(nameRequest.getName());
+
+        return new ResponseUnit(Status.SUCCESS, "", formRepository.save(aForm));
     }
 }
