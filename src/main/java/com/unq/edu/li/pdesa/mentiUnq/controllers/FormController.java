@@ -1,6 +1,7 @@
 package com.unq.edu.li.pdesa.mentiUnq.controllers;
 
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.AnswerRequest;
+import com.unq.edu.li.pdesa.mentiUnq.controllers.request.FormNameRequest;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.QuestionRequest;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.services.FormService;
@@ -48,12 +49,28 @@ public class FormController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
             @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
     })
-
     @PatchMapping(path = "/{formId}", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity update(
             @Parameter(description = "Form body", required = true)@PathVariable("formId") Long id,
             @RequestBody QuestionRequest question) throws Exception {
         ResponseUnit createdForm = formService.addQuestion(id, question);
+
+        return ResponseEntity.ok(createdForm);
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @Operation(summary = "Renames a form", description = "rename a form in the database ", operationId = "renameForm")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+    })
+    @PatchMapping(path = "/{formId}/rename", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity renameForm(
+            @Parameter(description = "", required = true)@PathVariable("formId") Long id,
+            @RequestBody FormNameRequest nameRequest) throws Exception {
+        ResponseUnit createdForm = formService.renameForm(id, nameRequest);
 
         return ResponseEntity.ok(createdForm);
     }
@@ -91,6 +108,20 @@ public class FormController {
         ResponseUnit forms = formService.getAnswersByQuestionId(id);
 
         return ResponseEntity.ok(forms);
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @Operation(summary = "Delete form by id", description = "Delete a form from database.", operationId = "deleteFormById")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+    })
+    @DeleteMapping(path = "/{formId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> deleteQuestionById(@Parameter(description = "form Id", required = true)@PathVariable("formId") Long formId) throws Exception {
+
+        return ResponseEntity.ok(formService.deleteFormById(formId));
     }
 
     @PreAuthorize("hasAuthority('USER')")
