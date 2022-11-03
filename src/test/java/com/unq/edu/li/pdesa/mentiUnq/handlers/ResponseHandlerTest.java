@@ -1,6 +1,7 @@
 package com.unq.edu.li.pdesa.mentiUnq.handlers;
 
 import com.unq.edu.li.pdesa.mentiUnq.controllers.UserController;
+import com.unq.edu.li.pdesa.mentiUnq.exceptions.BadRequestException;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.EntityNotFoundException;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.UnauthorizedException;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,10 +70,23 @@ public class ResponseHandlerTest
 		doThrow(new AccessDeniedException(HttpStatus.UNAUTHORIZED.toString())).when(controller).getById(entityId);
 
 		mockMvc.perform(
-						get("/api/user/forms/{id}", entityId.toString())
-								.contentType(MediaType.APPLICATION_JSON)
-				)
+				get("/api/user/forms/{id}", entityId.toString())
+						.contentType(MediaType.APPLICATION_JSON)
+		)
 				.andExpect(status().isUnauthorized()).andReturn();
+
+	}
+
+	@Test
+	public void whenGetAllFormsByIdAndThenRaiseBadRequest() throws Exception
+	{
+		doThrow(BadRequestException.createWith(entityId.toString())).when(controller).getById(entityId);
+
+		mockMvc.perform(
+				get("/api/user/forms/{id}", entityId.toString(), entityId.toString())
+						.contentType(MediaType.APPLICATION_JSON)
+		)
+				.andExpect(status().isBadRequest()).andReturn();
 
 	}
 }

@@ -149,7 +149,7 @@ public class AuthServiceTest
 		assertNotNull(responseUnit);
 		assertEquals(Status.SUCCESS, responseUnit.getStatus());
 		assertEquals(Strings.EMPTY, responseUnit.getMessage());
-		assertEquals("{\"accessToken\":\"TOKEN\"}", responseUnit.getPayload());
+		assertEquals("{\"id\":0,\"accessToken\":\"TOKEN\"}", responseUnit.getPayload());
 		verify(mailingRepository).getMailingWhiteListByEmail(any());
 		verify(userRepository).getUserByUsername(username);
 		verify(authenticationManager).authenticate(any(Authentication.class));

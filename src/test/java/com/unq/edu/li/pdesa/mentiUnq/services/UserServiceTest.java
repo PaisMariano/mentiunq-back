@@ -1,17 +1,14 @@
 package com.unq.edu.li.pdesa.mentiUnq.services;
 
-import com.unq.edu.li.pdesa.mentiUnq.controllers.fixtures.ResponseUnitFixture;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.EntityNotFoundException;
 import com.unq.edu.li.pdesa.mentiUnq.models.Form;
 import com.unq.edu.li.pdesa.mentiUnq.models.MentiUser;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.repositories.UserRepository;
 import com.unq.edu.li.pdesa.mentiUnq.services.fixtures.FormFixture;
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.rules.ExpectedException;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -53,13 +50,13 @@ public class UserServiceTest extends AbstractServiceTest
 		Optional<MentiUser> optionalMentiUser = Optional.of(mentiUser);
 		List<Form> forms = Arrays.asList(aForm);
 
-		when(userRepository.findById(anyLong())).thenReturn(optionalMentiUser);
+		when(userRepository.getFullUserById(anyLong())).thenReturn(optionalMentiUser);
 		when(mentiUser.getForms()).thenReturn(forms);
 
 		ResponseUnit responseUnit = service.getAllFormsById(userId);
 
 		assertNotNull(responseUnit);
-		verify(userRepository).findById(anyLong());
+		verify(userRepository).getFullUserById(anyLong());
 	}
 
 	@Test
@@ -67,7 +64,7 @@ public class UserServiceTest extends AbstractServiceTest
 	{
 		String expectedMessage = "Entity '" + userId + "' not found";
 
-		when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+		when(userRepository.getFullUserById(anyLong())).thenReturn(Optional.empty());
 
 		EntityNotFoundException exception = assertThrows(
 				EntityNotFoundException.class,
@@ -76,6 +73,6 @@ public class UserServiceTest extends AbstractServiceTest
 
 		assertNotNull(exception);
 		assertEquals(expectedMessage, exception.getMessage());
-		verify(userRepository).findById(anyLong());
+		verify(userRepository).getFullUserById(anyLong());
 	}
 }

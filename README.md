@@ -1,6 +1,9 @@
 # mentiunq-back
 Repositorio back-end para mentiUNQ
 
+[![Tests](https://github.com/PaisMariano/mentiunq-back/actions/workflows/build.yml/badge.svg)](https://github.com/PaisMariano/mentiunq-back/actions/workflows/build.yml)
+![coverage](.github/badges/jacoco.svg)
+![branches coverage](.github/badges/branches.svg)
 ### Requerimientos recomendados:
 
     JDK 1.8

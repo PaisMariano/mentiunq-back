@@ -1,8 +1,12 @@
 package com.unq.edu.li.pdesa.mentiUnq.controllers.fixtures;
 
+import com.unq.edu.li.pdesa.mentiUnq.models.MentiOption;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.Status;
 import org.apache.logging.log4j.util.Strings;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ResponseUnitFixture
 {
@@ -55,9 +59,37 @@ public class ResponseUnitFixture
 		return responseUnit;
 	}
 
-	public static ResponseUnit withOkResponseGetFormsById()
+	public static ResponseUnit withOkGetFormByCode()
 	{
 		String payload = "{\"id\":1,\"form\":{\"id\":2,\"code\":\"c673272d-90ce-4b02-83be-681e1efc2ebf\",\"codeShare\":\"YZY3MZI3\"},\"userName\":\"pepito\"}";
+		ResponseUnit responseUnit = ResponseUnitFixture.withDefaults();
+		responseUnit.setPayload(payload);
+		return responseUnit;
+	}
+
+    public static ResponseUnit withOkGetAnswersByQuestionId() {
+		String payload = "[{\"id\":1,\"name\":\"pepito\",\"score\":1}]";
+		ResponseUnit responseUnit = ResponseUnitFixture.withDefaults();
+		responseUnit.setPayload(payload);
+		return responseUnit;
+    }
+
+	public static ResponseUnit withOkDeleteQuestionById() {
+		String payload = "Question with id 1 from Form with id 1 deleted successful";
+		ResponseUnit responseUnit = ResponseUnitFixture.withDefaults();
+		responseUnit.setPayload(payload);
+		return responseUnit;
+	}
+
+    public static ResponseUnit withOkDeleteOptionById() {
+		String payload = "Option with id 1 from Form with id 1 deleted successful";
+		ResponseUnit responseUnit = ResponseUnitFixture.withDefaults();
+		responseUnit.setPayload(payload);
+		return responseUnit;
+    }
+
+	public static ResponseUnit withOkGetQuestionsById() {
+		String payload = "[{\"id\":1,\"question\":\"pepito\",\"isCurrent\":\"true\",\"mentiOptions\":\"[]\"}]";
 		ResponseUnit responseUnit = ResponseUnitFixture.withDefaults();
 		responseUnit.setPayload(payload);
 		return responseUnit;
