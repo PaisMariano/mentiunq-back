@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -150,12 +151,27 @@ public class FormService {
 
     public ResponseUnit deleteOptionById(Long formId, Long optionId) throws EntityNotFoundException
     {
-        getFormById(formId);
+		Form aForm = getFormById(formId);
 
         MentiOption mentiOption = getMentiOptionById(optionId);
 
-        answerRepository.delete(mentiOption);
-        return new ResponseUnit(Status.SUCCESS, "", String.format("Option with id %s from Form with id %s deleted successful", optionId, formId) );
+		List<Question> tempList = new ArrayList<>();
+		List<Question> currentQuestions = aForm.getQuestions();
+
+		for(Question _question : currentQuestions){
+			Boolean isRemoved = _question.getMentiOptions().removeIf(_option -> _option.getId() == optionId);
+			tempList.add(_question);
+			if(isRemoved){
+				answerRepository.delete(mentiOption);
+				break;
+			}
+		}
+
+		aForm.setQuestions(tempList);
+
+		//formRepository.save(aForm);
+
+        return new ResponseUnit(Status.SUCCESS, "", formRepository.save(aForm));
     }
 
     public ResponseUnit getQuestionsById(Long formId) throws EntityNotFoundException
@@ -278,4 +294,16 @@ public class FormService {
 
         return new ResponseUnit(Status.SUCCESS, "", formRepository.save(aForm));
     }
+
+	public ResponseUnit updateQuestion(Long formId, Long questionId,
+									   QuestionRequest request) throws EntityNotFoundException
+	{
+		getFormById(formId);
+		Question question = getQuestion(questionId);
+
+		question.setQuestion(request.getQuestion());
+		question.setMentiOptions(request.getOptions());
+
+		return new ResponseUnit(Status.SUCCESS, "", questionRepository.save(question));
+	}
 }

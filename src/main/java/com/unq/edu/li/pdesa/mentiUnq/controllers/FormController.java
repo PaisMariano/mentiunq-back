@@ -149,9 +149,9 @@ public class FormController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
             @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
     })
-    @DeleteMapping(path = "/{formId}/option{optionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    @DeleteMapping(path = "/{formId}/option/{optionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<?> deleteOptionById(@Parameter(description = "Slide Id", required = true)@PathVariable("formId") Long formId,
-                                              @Parameter(description = "MentiOption Id", required = true)@RequestParam("optionId") Long optionId) throws Exception {
+                                              @Parameter(description = "MentiOption Id", required = true)@PathVariable("optionId") Long optionId) throws Exception {
 
         return ResponseEntity.ok(formService.deleteOptionById(formId, optionId));
     }
@@ -199,5 +199,24 @@ public class FormController {
 		ResponseUnit createdForm = formService.updateCurrentQuestion(formId, questionId);
 
 		return ResponseEntity.ok(createdForm);
+	}
+
+	@PreAuthorize("hasAuthority('USER')")
+	@Operation(summary = "Update question", description = "Update current question ", operationId = "updateQuestion")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+	})
+	@PatchMapping(path = "/{formId}/update/question/{questionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity updateQuestion(
+			@Parameter(description = "Form Id", required = true) @PathVariable("formId") Long formId,
+			@Parameter(description = "Question id", required = true) @PathVariable("questionId") Long questionId,
+			@Parameter(description = "Question request", required = true) @RequestBody QuestionRequest request
+	) throws Exception {
+		ResponseUnit currentQuestion = formService.updateQuestion(formId, questionId, request);
+
+		return ResponseEntity.ok(currentQuestion);
 	}
 }
