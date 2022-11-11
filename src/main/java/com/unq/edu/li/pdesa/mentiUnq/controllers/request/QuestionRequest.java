@@ -17,5 +17,4 @@ public class QuestionRequest {
     private String question;
     @NotNull
 	private Long slideId;
-	private List<MentiOption> options;
 }

@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -111,7 +110,7 @@ public class FormService {
         return new ResponseUnit(Status.SUCCESS, "", addAnswer(questionId, answer, 1));
     }
 
-    public Object deleteFormById(Long formId) throws EntityNotFoundException {
+    public ResponseUnit deleteFormById(Long formId) throws EntityNotFoundException {
         Form aForm = getFormById(formId);
         formRepository.delete(aForm);
 
@@ -168,8 +167,6 @@ public class FormService {
 		}
 
 		aForm.setQuestions(tempList);
-
-		//formRepository.save(aForm);
 
         return new ResponseUnit(Status.SUCCESS, "", formRepository.save(aForm));
     }
@@ -295,15 +292,24 @@ public class FormService {
         return new ResponseUnit(Status.SUCCESS, "", formRepository.save(aForm));
     }
 
-	public ResponseUnit updateQuestion(Long formId, Long questionId,
-									   QuestionRequest request) throws EntityNotFoundException
+	public ResponseUnit updateNameQuestion(Long formId, Long questionId,
+										   QuestionRequest request) throws EntityNotFoundException
 	{
 		getFormById(formId);
 		Question question = getQuestion(questionId);
 
 		question.setQuestion(request.getQuestion());
-		question.setMentiOptions(request.getOptions());
 
 		return new ResponseUnit(Status.SUCCESS, "", questionRepository.save(question));
+	}
+
+	public ResponseUnit updateNameOption(Long formId, Long optionId, AnswerRequest request) throws EntityNotFoundException
+	{
+		getFormById(formId);
+		MentiOption option = getMentiOptionById(optionId);
+
+		option.setName(request.getOption());
+
+		return new ResponseUnit(Status.SUCCESS, "", answerRepository.save(option));
 	}
 }

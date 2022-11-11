@@ -121,7 +121,7 @@ public class FormController {
             @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
     })
     @DeleteMapping(path = "/{formId}", produces = { MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<?> deleteQuestionById(@Parameter(description = "form Id", required = true)@PathVariable("formId") Long formId) throws Exception {
+    public ResponseEntity<?> deleteFormById(@Parameter(description = "form Id", required = true)@PathVariable("formId") Long formId) throws Exception {
 
         return ResponseEntity.ok(formService.deleteFormById(formId));
     }
@@ -202,7 +202,7 @@ public class FormController {
 	}
 
 	@PreAuthorize("hasAuthority('USER')")
-	@Operation(summary = "Update question", description = "Update current question ", operationId = "updateQuestion")
+	@Operation(summary = "Update name question", description = "Update current name question ", operationId = "updateNameQuestion")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
 			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
@@ -210,12 +210,31 @@ public class FormController {
 			@ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
 	})
 	@PatchMapping(path = "/{formId}/update/question/{questionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity updateQuestion(
+	public ResponseEntity updateNameQuestion(
 			@Parameter(description = "Form Id", required = true) @PathVariable("formId") Long formId,
 			@Parameter(description = "Question id", required = true) @PathVariable("questionId") Long questionId,
 			@Parameter(description = "Question request", required = true) @RequestBody QuestionRequest request
 	) throws Exception {
-		ResponseUnit currentQuestion = formService.updateQuestion(formId, questionId, request);
+		ResponseUnit currentQuestion = formService.updateNameQuestion(formId, questionId, request);
+
+		return ResponseEntity.ok(currentQuestion);
+	}
+
+	@PreAuthorize("hasAuthority('USER')")
+	@Operation(summary = "Update name option", description = "Update current name option ", operationId = "updateNameOption")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+	})
+	@PatchMapping(path = "/{formId}/update/option/{optionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity updateNameOption(
+			@Parameter(description = "Form Id", required = true) @PathVariable("formId") Long formId,
+			@Parameter(description = "Option id", required = true) @PathVariable("optionId") Long optionId,
+			@Parameter(description = "Question request", required = true) @RequestBody AnswerRequest request
+	) throws Exception {
+		ResponseUnit currentQuestion = formService.updateNameOption(formId, optionId, request);
 
 		return ResponseEntity.ok(currentQuestion);
 	}

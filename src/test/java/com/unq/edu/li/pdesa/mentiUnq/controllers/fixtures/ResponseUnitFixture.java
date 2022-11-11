@@ -95,6 +95,14 @@ public class ResponseUnitFixture
 		return responseUnit;
 	}
 
+	public static ResponseUnit withOkDeleteForm()
+	{
+		String payload = "Form with id 1 deleted successfully";
+		ResponseUnit responseUnit = ResponseUnitFixture.withDefaults();
+		responseUnit.setPayload(payload);
+		return responseUnit;
+	}
+
 	private ResponseUnit build()
 	{
 		return new ResponseUnit(status, message, payload);
