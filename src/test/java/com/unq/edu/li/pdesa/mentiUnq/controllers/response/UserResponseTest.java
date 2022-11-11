@@ -1,6 +1,5 @@
 package com.unq.edu.li.pdesa.mentiUnq.controllers.response;
 
-import com.unq.edu.li.pdesa.mentiUnq.controllers.request.OAuthRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
