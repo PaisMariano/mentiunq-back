@@ -5,6 +5,7 @@ import com.unq.edu.li.pdesa.mentiUnq.controllers.fixtures.QuestionRequestFixture
 import com.unq.edu.li.pdesa.mentiUnq.controllers.fixtures.ResponseUnitFixture;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.AnswerRequest;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.QuestionRequest;
+import com.unq.edu.li.pdesa.mentiUnq.exceptions.EntityNotFoundException;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.services.FormService;
 import org.junit.jupiter.api.BeforeEach;
@@ -249,6 +250,27 @@ public class FormControllerTest extends AbstractControllerTest
 		String response = result.getResponse().getContentAsString();
 		ResponseUnit returnedResponse = gson.fromJson(response, ResponseUnit.class);
 		ResponseUnit expectedResponse = ResponseUnitFixture.withOkResponseCreateForm();
+
+		assertNotNull(result);
+		assertNotNull(response);
+		verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
+	}
+
+	@Test
+	public void whenTryToGetResultsByCodeShareAndFormExistsThenReturnValidResultsAndStatus200() throws Exception
+	{
+		ResponseUnit responseUnit = ResponseUnitFixture.withOkResultsFormByCode();
+
+		when(formService.getResultsByFormCode(anyString())).thenReturn(responseUnit);
+
+		final MvcResult result = mockMvc.perform(get("/api/form/code/{formCode}/results", code)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+
+
+		String response = result.getResponse().getContentAsString();
+		ResponseUnit returnedResponse = gson.fromJson(response, ResponseUnit.class);
+		ResponseUnit expectedResponse = ResponseUnitFixture.withOkResultsFormByCode();
 
 		assertNotNull(result);
 		assertNotNull(response);

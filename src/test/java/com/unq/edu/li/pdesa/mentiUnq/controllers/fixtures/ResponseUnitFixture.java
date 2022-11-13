@@ -95,6 +95,14 @@ public class ResponseUnitFixture
 		return responseUnit;
 	}
 
+	public static ResponseUnit withOkResultsFormByCode()
+	{
+		String payload = "{\"votes\":1,\"slides\":\"1\",\"contentSlides\":\"0\",\"openSlides\":\"0\",\"closeSlides\":\"1\"}";
+		ResponseUnit responseUnit = ResponseUnitFixture.withDefaults();
+		responseUnit.setPayload(payload);
+		return responseUnit;
+	}
+
 	private ResponseUnit build()
 	{
 		return new ResponseUnit(status, message, payload);
