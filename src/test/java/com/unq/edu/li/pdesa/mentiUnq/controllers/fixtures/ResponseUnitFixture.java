@@ -1,12 +1,8 @@
 package com.unq.edu.li.pdesa.mentiUnq.controllers.fixtures;
 
-import com.unq.edu.li.pdesa.mentiUnq.models.MentiOption;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.Status;
 import org.apache.logging.log4j.util.Strings;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class ResponseUnitFixture
 {
