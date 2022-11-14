@@ -66,5 +66,19 @@ Para una correcta organización, el proyeco se dividió en varias carpetas dentr
 - respositories: carpeta con los respositorios para comnunicarse con la base de datos.
 - services: carpeta donde se encuentran los servicios para poder recibir las solicitudes desde los controllers y saber como interactuar con el modelo.
 
+### Proyecto dockerizado
+
+El proyecto cuenta con un archivo dockerfile para que se puede levantar con una imagen docker. Como requisito se debe tener docker instalado
+ - En linux se debe seguir [este tutorial](https://docs.docker.com/engine/install/ubuntu/)
+ - En windows se debe seguir [este tutorial](https://docs.docker.com/desktop/install/windows-install/)
+ 
+Una vez instalado y configurado en la ruta raiz del proyecto se debe ejecutar los siguientes comandos
+
+- ```mvn clean package``` : esto limpiará dependencias, eliminará carpetas temporales, validará, generará nuevamente el código fuente y compilará el proyecto en un .jar
+- ```docker build -t mentiunq-back .``` : este comando creará una imagen basado en el archivo dockerfile llamado mentiunq-back (puede elegir otro nombre si asi lo desea).
+- ```docker run -p 8080:8998 mentiunq-back -d```: este comando correrá la imagen creada anteriormente, mapeando el 8080 interno de docker con en el puerto 8998 (puede elegir otro) de su pc (recuerde que si modificó el nombre mentiunq-back del pasado 2, acá también debe ser modificado)
+
+En caso de tener errores en linux, correr los comandos de docker anteponiendo ```sudo```
+
 ### UML
 [![UML back mentiunq](https://i.imgur.com/l1QTkYF.png)]

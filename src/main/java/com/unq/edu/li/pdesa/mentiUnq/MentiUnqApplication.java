@@ -17,6 +17,7 @@ public class MentiUnqApplication {
 		SpringApplication.run(MentiUnqApplication.class, args);
 	}
 
+
 	@Bean
 	public OpenAPI customOpenAPI(@Value("${project.version}") String appVersion)
 	{
@@ -28,5 +29,4 @@ public class MentiUnqApplication {
 						.description("Documentation about endpoints, requests and response from MentiUNQ")
 						.version(appVersion));
 	}
-
 }
