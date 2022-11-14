@@ -1,11 +1,12 @@
 package com.unq.edu.li.pdesa.mentiUnq.controllers;
 
 import com.unq.edu.li.pdesa.mentiUnq.controllers.fixtures.AnswerRequestFixture;
+import com.unq.edu.li.pdesa.mentiUnq.controllers.fixtures.FormNameRequestFixture;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.fixtures.QuestionRequestFixture;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.fixtures.ResponseUnitFixture;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.AnswerRequest;
+import com.unq.edu.li.pdesa.mentiUnq.controllers.request.FormNameRequest;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.QuestionRequest;
-import com.unq.edu.li.pdesa.mentiUnq.exceptions.EntityNotFoundException;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.services.FormService;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,12 +18,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -176,7 +181,7 @@ public class FormControllerTest extends AbstractControllerTest
 
 		when(formService.deleteOptionById(anyLong(), anyLong())).thenReturn(responseUnit);
 
-		final MvcResult result = mockMvc.perform(delete("/api/form/{formId}/option?optionId={optionId}", formId, optionId)
+		final MvcResult result = mockMvc.perform(delete("/api/form/{formId}/option/{optionId}", formId, optionId)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 
@@ -241,9 +246,9 @@ public class FormControllerTest extends AbstractControllerTest
 		when(formService.updateCurrentQuestion(anyLong(), anyLong())).thenReturn(responseUnit);
 
 		final MvcResult result = mockMvc.perform(patch("/api/form/{formId}/current/question/{questionId}", formId, questionId)
-				.content(asJsonString(request))
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON))
+						.content(asJsonString(request))
+						.accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 
 
@@ -254,6 +259,30 @@ public class FormControllerTest extends AbstractControllerTest
 		assertNotNull(result);
 		assertNotNull(response);
 		verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
+	}
+
+	@Test
+	public void whenUpdateNameQuestionWithValidRequestThenControllerReturnsA200Ok() throws Exception
+	{
+		ResponseUnit responseUnit = ResponseUnitFixture.withOkResponseCreateForm();
+		QuestionRequest request = QuestionRequestFixture.withDefaults();
+
+		when(formService.updateNameQuestion(anyLong(), anyLong(), any(QuestionRequest.class))).thenReturn(responseUnit);
+
+		final MvcResult result = mockMvc.perform(
+						patch("/api/form/{formId}/update/question/{questionId}", formId, questionId)
+								.content(asJsonString(request))
+								.accept(MediaType.APPLICATION_JSON)
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+
+		String response = result.getResponse().getContentAsString();
+		ResponseUnit returnedResponse = gson.fromJson(response, ResponseUnit.class);
+		ResponseUnit expectedResponse = ResponseUnitFixture.withOkResponseCreateForm();
+
+		assertNotNull(response);
+		verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
+		verify(formService).updateNameQuestion(anyLong(), anyLong(), any(QuestionRequest.class));
 	}
 
 	@Test
@@ -271,9 +300,82 @@ public class FormControllerTest extends AbstractControllerTest
 		String response = result.getResponse().getContentAsString();
 		ResponseUnit returnedResponse = gson.fromJson(response, ResponseUnit.class);
 		ResponseUnit expectedResponse = ResponseUnitFixture.withOkResultsFormByCode();
+		assertNotNull(result);
+		assertNotNull(response);
+		verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
+		verify(formService).getResultsByFormCode(anyString());
+	}
+
+	@Test
+	public void whenUpdateNameOptionWithValidRequestThenControllerReturnsA200Ok() throws Exception
+	{
+		ResponseUnit responseUnit = ResponseUnitFixture.withOkResponseCreateForm();
+		AnswerRequest request = AnswerRequestFixture.withDefaults();
+
+		when(formService.updateNameOption(anyLong(), anyLong(), any(AnswerRequest.class))).thenReturn(responseUnit);
+
+		final MvcResult result = mockMvc.perform(patch("/api/form/{formId}/update/option/{optionId}", formId, optionId)
+						.content(asJsonString(request))
+						.accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+
+
+		String response = result.getResponse().getContentAsString();
+		ResponseUnit returnedResponse = gson.fromJson(response, ResponseUnit.class);
+		ResponseUnit expectedResponse = ResponseUnitFixture.withOkResponseCreateForm();
 
 		assertNotNull(result);
 		assertNotNull(response);
 		verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
+		verify(formService).updateNameOption(anyLong(), anyLong(), any(AnswerRequest.class));
+	}
+
+	@Test
+	public void whenRenameFormWithValidRequestThenControllerReturnsA200Ok() throws Exception
+	{
+		ResponseUnit responseUnit = ResponseUnitFixture.withOkResponseCreateForm();
+		FormNameRequest request = FormNameRequestFixture.withDefaults();
+
+		when(formService.renameForm(anyLong(), any(FormNameRequest.class))).thenReturn(responseUnit);
+
+		final MvcResult result = mockMvc.perform(patch("/api/form/{formId}/rename", formId, optionId)
+						.content(asJsonString(request))
+						.accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+
+
+		String response = result.getResponse().getContentAsString();
+		ResponseUnit returnedResponse = gson.fromJson(response, ResponseUnit.class);
+		ResponseUnit expectedResponse = ResponseUnitFixture.withOkResponseCreateForm();
+
+		assertNotNull(result);
+		assertNotNull(response);
+		verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
+		verify(formService).renameForm(anyLong(), any(FormNameRequest.class));
+	}
+
+	@Test
+	public void whenDeleteFormByIdWithValidRequestThenControllerReturnsA200Ok() throws Exception
+	{
+		ResponseUnit responseUnit = ResponseUnitFixture.withOkDeleteForm();
+
+		when(formService.deleteFormById(anyLong())).thenReturn(responseUnit);
+
+		final MvcResult result = mockMvc.perform(delete("/api/form/{formId}", formId)
+						.accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+
+
+		String response = result.getResponse().getContentAsString();
+		ResponseUnit returnedResponse = gson.fromJson(response, ResponseUnit.class);
+		ResponseUnit expectedResponse = ResponseUnitFixture.withOkDeleteForm();
+
+		assertNotNull(result);
+		assertNotNull(response);
+		verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
+		verify(formService).deleteFormById(anyLong());
 	}
 }

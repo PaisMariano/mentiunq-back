@@ -4,7 +4,6 @@ import com.unq.edu.li.pdesa.mentiUnq.controllers.request.AnswerRequest;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.FormNameRequest;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.QuestionRequest;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.response.ResultResponse;
-import com.unq.edu.li.pdesa.mentiUnq.controllers.response.UserResponse;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.BadRequestException;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.EntityNotFoundException;
 import com.unq.edu.li.pdesa.mentiUnq.models.*;
@@ -112,7 +111,7 @@ public class FormService {
         return new ResponseUnit(Status.SUCCESS, "", addAnswer(questionId, answer, 1));
     }
 
-    public Object deleteFormById(Long formId) throws EntityNotFoundException {
+    public ResponseUnit deleteFormById(Long formId) throws EntityNotFoundException {
         Form aForm = getFormById(formId);
         formRepository.delete(aForm);
 
@@ -152,12 +151,25 @@ public class FormService {
 
     public ResponseUnit deleteOptionById(Long formId, Long optionId) throws EntityNotFoundException
     {
-        getFormById(formId);
+		Form aForm = getFormById(formId);
 
         MentiOption mentiOption = getMentiOptionById(optionId);
 
-        answerRepository.delete(mentiOption);
-        return new ResponseUnit(Status.SUCCESS, "", String.format("Option with id %s from Form with id %s deleted successful", optionId, formId) );
+		List<Question> tempList = new ArrayList<>();
+		List<Question> currentQuestions = aForm.getQuestions();
+
+		for(Question _question : currentQuestions){
+			Boolean isRemoved = _question.getMentiOptions().removeIf(_option -> _option.getId() == optionId);
+			tempList.add(_question);
+			if(isRemoved){
+				answerRepository.delete(mentiOption);
+				break;
+			}
+		}
+
+		aForm.setQuestions(tempList);
+
+        return new ResponseUnit(Status.SUCCESS, "", formRepository.save(aForm));
     }
 
     public ResponseUnit getQuestionsById(Long formId) throws EntityNotFoundException
@@ -287,6 +299,27 @@ public class FormService {
         return new ResponseUnit(Status.SUCCESS, "", formRepository.save(aForm));
     }
 
+	public ResponseUnit updateNameQuestion(Long formId, Long questionId,
+										   QuestionRequest request) throws EntityNotFoundException
+	{
+		getFormById(formId);
+		Question question = getQuestion(questionId);
+
+		question.setQuestion(request.getQuestion());
+
+		return new ResponseUnit(Status.SUCCESS, "", questionRepository.save(question));
+	}
+
+	public ResponseUnit updateNameOption(Long formId, Long optionId, AnswerRequest request) throws EntityNotFoundException
+	{
+		getFormById(formId);
+		MentiOption option = getMentiOptionById(optionId);
+
+		option.setName(request.getOption());
+
+		return new ResponseUnit(Status.SUCCESS, "", answerRepository.save(option));
+	}
+
     public ResponseUnit getResultsByFormCode(String formCode) throws EntityNotFoundException {
         Form aForm = getFormByModelCode(formCode);
 
@@ -303,4 +336,5 @@ public class FormService {
 
         return new ResponseUnit(Status.SUCCESS, "", resultResponse);
     }
+
 }

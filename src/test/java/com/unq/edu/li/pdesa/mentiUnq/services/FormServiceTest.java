@@ -1,33 +1,49 @@
 package com.unq.edu.li.pdesa.mentiUnq.services;
 
 import com.unq.edu.li.pdesa.mentiUnq.controllers.fixtures.AnswerRequestFixture;
+import com.unq.edu.li.pdesa.mentiUnq.controllers.fixtures.FormNameRequestFixture;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.fixtures.QuestionRequestFixture;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.fixtures.ResponseUnitFixture;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.AnswerRequest;
+import com.unq.edu.li.pdesa.mentiUnq.controllers.request.FormNameRequest;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.QuestionRequest;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.BadRequestException;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.EntityNotFoundException;
-import com.unq.edu.li.pdesa.mentiUnq.models.*;
+import com.unq.edu.li.pdesa.mentiUnq.models.Form;
+import com.unq.edu.li.pdesa.mentiUnq.models.MentiOption;
+import com.unq.edu.li.pdesa.mentiUnq.models.MentiUser;
+import com.unq.edu.li.pdesa.mentiUnq.models.Question;
+import com.unq.edu.li.pdesa.mentiUnq.models.Slide;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
-import com.unq.edu.li.pdesa.mentiUnq.repositories.*;
+import com.unq.edu.li.pdesa.mentiUnq.repositories.AnswerRepository;
+import com.unq.edu.li.pdesa.mentiUnq.repositories.FormRepository;
+import com.unq.edu.li.pdesa.mentiUnq.repositories.QuestionRepository;
+import com.unq.edu.li.pdesa.mentiUnq.repositories.SlideRepository;
+import com.unq.edu.li.pdesa.mentiUnq.repositories.UserRepository;
 import com.unq.edu.li.pdesa.mentiUnq.services.fixtures.MentiOptionFixture;
 import com.unq.edu.li.pdesa.mentiUnq.services.fixtures.QuestionFixture;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.rules.ExpectedException;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class FormServiceTest
@@ -426,6 +442,91 @@ public class FormServiceTest
 		verify(formRepository).findByCodeShare(anyString());
 		verify(formRepository).save(any(Form.class));
 		verify(questionRepository).findById(anyLong());
+	}
+
+	@Test
+	public void testDeleteFormByIdWhenFormIdExistReturnValidResponseUnit() throws EntityNotFoundException
+	{
+		Optional<Form> formOptional = Optional.of(mock(Form.class));
+
+		when(formRepository.findById(anyLong())).thenReturn(formOptional);
+
+		ResponseUnit responseUnit = service.deleteFormById(formId);
+		ResponseUnit expected = ResponseUnitFixture.withOkDeleteForm();
+
+		assertNotNull(responseUnit);
+		assertEquals(expected.getStatus(), responseUnit.getStatus());
+		assertEquals(expected.getMessage(), responseUnit.getMessage());
+		verify(formRepository).findById(anyLong());
+	}
+
+	@Test
+	public void testDeletesOptionByIdAndOptionIdExistAndFormHasQuestionThenProcessOk() throws EntityNotFoundException {
+		Form form = mock(Form.class);
+		Question aQuestion = mock(Question.class);
+		MentiOption option = mock(MentiOption.class);
+		MentiOption anotherOption = mock(MentiOption.class);
+		List<Question> questions = Arrays.asList(aQuestion);
+		List<MentiOption> options = new ArrayList<>();
+		options.add(option);
+		options.add(anotherOption);
+
+		when(formRepository.findById(anyLong())).thenReturn(Optional.of(form));
+		when(answerRepository.findById(anyLong())).thenReturn(Optional.of(mock(MentiOption.class)));
+		when(aQuestion.getMentiOptions()).thenReturn(options);
+		when(form.getQuestions()).thenReturn(questions);
+		when(option.getId()).thenReturn(optionId);
+
+		ResponseUnit responseUnit = service.deleteOptionById(formId, optionId);
+
+		assertNotNull(responseUnit);
+		verify(formRepository).findById(anyLong());
+		verify(answerRepository).findById(anyLong());
+		verify(answerRepository).delete(any(MentiOption.class));
+	}
+
+	@Test
+	public void testRenameFormWhenFormIdExistThenReturnsAValidResponse() throws EntityNotFoundException
+	{
+		FormNameRequest request = FormNameRequestFixture.withDefaults();
+
+		when(formRepository.findById(anyLong())).thenReturn(Optional.of(mock(Form.class)));
+
+		ResponseUnit responseUnit = service.renameForm(formId, request);
+
+		assertNotNull(responseUnit);
+		verify(formRepository).findById(anyLong());
+	}
+
+	@Test
+	public void whenUpdateNameQuestionAndFormIdExistThenReturnAValidResponse() throws EntityNotFoundException
+	{
+		QuestionRequest request = QuestionRequestFixture.withDefaults();
+
+		when(formRepository.findById(anyLong())).thenReturn(Optional.of(mock(Form.class)));
+		when(questionRepository.findById(anyLong())).thenReturn(Optional.of(mock(Question.class)));
+
+		ResponseUnit responseUnit = service.updateNameQuestion(formId, questionId, request);
+
+		assertNotNull(responseUnit);
+		verify(formRepository).findById(anyLong());
+		verify(questionRepository).findById(anyLong());
+	}
+
+	@Test
+	public void whenUpdateNameOptionAndFormIdExistThenReturnAValidResponse() throws EntityNotFoundException
+	{
+		AnswerRequest request = AnswerRequestFixture.withDefaults();
+
+		when(formRepository.findById(anyLong())).thenReturn(Optional.of(mock(Form.class)));
+		when(answerRepository.findById(anyLong())).thenReturn(Optional.of(mock(MentiOption.class)));
+
+		ResponseUnit responseUnit = service.updateNameOption(formId, questionId, request);
+
+		assertNotNull(responseUnit);
+		verify(formRepository).findById(anyLong());
+		verify(answerRepository).findById(anyLong());
+
 	}
 
 	@Test
