@@ -200,4 +200,17 @@ public class FormController {
 
 		return ResponseEntity.ok(createdForm);
 	}
+
+    @PreAuthorize("hasAuthority('USER')")
+    @Operation(summary = "Get results by form code", description = "Get results by form code", operationId = "getResultsByFormCode")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+    })
+    @GetMapping(path = "/code/{formCode}/results", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> getResultsByFormCode(@Parameter(description = "form Code", required = true)@PathVariable("formCode") String formCode) throws Exception {
+        return ResponseEntity.ok(formService.getResultsByFormCode(formCode));
+    }
 }

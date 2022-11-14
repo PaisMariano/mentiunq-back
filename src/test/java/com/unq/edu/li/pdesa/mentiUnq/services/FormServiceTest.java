@@ -2,6 +2,7 @@ package com.unq.edu.li.pdesa.mentiUnq.services;
 
 import com.unq.edu.li.pdesa.mentiUnq.controllers.fixtures.AnswerRequestFixture;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.fixtures.QuestionRequestFixture;
+import com.unq.edu.li.pdesa.mentiUnq.controllers.fixtures.ResponseUnitFixture;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.AnswerRequest;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.QuestionRequest;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.BadRequestException;
@@ -48,6 +49,9 @@ public class FormServiceTest
 
 	@Mock
 	private AnswerRepository answerRepository;
+
+	@Mock
+	private Form aForm;
 
 	Long userId = 1l;
 	Long formId = 1l;
@@ -422,5 +426,39 @@ public class FormServiceTest
 		verify(formRepository).findByCodeShare(anyString());
 		verify(formRepository).save(any(Form.class));
 		verify(questionRepository).findById(anyLong());
+	}
+
+	@Test
+	public void whenTryToGetResultsByFormCodeAndCodeDoesNotExistThenRaiseEntityNotFoundException(){
+		when(formRepository.findByCode(anyString())).thenReturn(Optional.empty());
+
+		Exception exception = assertThrows(EntityNotFoundException.class, () -> {
+			service.getResultsByFormCode(codeShare);
+		});
+
+		assertEquals("Entity 'CODE' not found", exception.getMessage());
+		verify(formRepository).findByCode(anyString());
+	}
+
+	@Test
+	public void whenTryToGetResultsByFormCodeAndCodeExistThenReturnAValidResponseUnit() throws EntityNotFoundException
+	{
+		MentiOption option = mock(MentiOption.class);
+		Question aQuestion = mock(Question.class);
+		List<Question> questions = Arrays.asList(aQuestion);
+		List<MentiOption> options = Arrays.asList(option);
+
+		when(formRepository.findByCode(anyString())).thenReturn(Optional.of(aForm));
+		when(aForm.getQuestions()).thenReturn(questions);
+		when(aQuestion.getMentiOptions()).thenReturn(options);
+		when(option.getScore()).thenReturn(1);
+
+		ResponseUnit responseUnit = service.getResultsByFormCode(codeShare);
+		ResponseUnit expected = ResponseUnitFixture.withOkResultsFormByCode();
+
+		assertNotNull(responseUnit);
+		assertEquals(expected.getMessage(), responseUnit.getMessage());
+		assertEquals(expected.getStatus(), responseUnit.getStatus());
+		verify(formRepository).findByCode(anyString());
 	}
 }

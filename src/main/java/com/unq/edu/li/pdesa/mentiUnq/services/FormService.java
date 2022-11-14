@@ -3,6 +3,8 @@ package com.unq.edu.li.pdesa.mentiUnq.services;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.AnswerRequest;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.FormNameRequest;
 import com.unq.edu.li.pdesa.mentiUnq.controllers.request.QuestionRequest;
+import com.unq.edu.li.pdesa.mentiUnq.controllers.response.ResultResponse;
+import com.unq.edu.li.pdesa.mentiUnq.controllers.response.UserResponse;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.BadRequestException;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.EntityNotFoundException;
 import com.unq.edu.li.pdesa.mentiUnq.models.*;
@@ -251,6 +253,12 @@ public class FormService {
         );
     }
 
+    private Form getFormByModelCode(String code) throws EntityNotFoundException {
+        return formRepository.findByCode(code).orElseThrow(
+                ()-> EntityNotFoundException.createWith(code)
+        );
+    }
+
     private Question getQuestion(Long questionId) throws EntityNotFoundException {
         return questionRepository.findById(questionId).orElseThrow(
                 ()-> EntityNotFoundException.createWith(questionId.toString())
@@ -277,5 +285,22 @@ public class FormService {
         aForm.setName(nameRequest.getName());
 
         return new ResponseUnit(Status.SUCCESS, "", formRepository.save(aForm));
+    }
+
+    public ResponseUnit getResultsByFormCode(String formCode) throws EntityNotFoundException {
+        Form aForm = getFormByModelCode(formCode);
+
+        ResultResponse resultResponse = new ResultResponse();
+
+        resultResponse.setSlides(aForm.getQuestions().size());
+
+        for (Question q : aForm.getQuestions()){
+            for(MentiOption mo : q.getMentiOptions()){
+                resultResponse.setVotes(resultResponse.getVotes() + mo.getScore());
+            }
+            resultResponse.setCloseSlides(resultResponse.getCloseSlides()+1);
+        }
+
+        return new ResponseUnit(Status.SUCCESS, "", resultResponse);
     }
 }
