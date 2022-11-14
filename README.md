@@ -72,7 +72,7 @@ El proyecto cuenta con un archivo dockerfile para que se puede levantar con una 
  - En linux se debe seguir [este tutorial](https://docs.docker.com/engine/install/ubuntu/)
  - En windows se debe seguir [este tutorial](https://docs.docker.com/desktop/install/windows-install/)
  
-Una vez instalado y configurado en la ruta raiz del proyecto se debe tirar los siguientes comandos
+Una vez instalado y configurado en la ruta raiz del proyecto se debe ejecutar los siguientes comandos
 
 - ```mvn clean package``` : esto limpiará dependencias, eliminará carpetas temporales, validará, generará nuevamente el código fuente y compilará el proyecto en un .jar
 - ```docker build -t mentiunq-back .``` : este comando creará una imagen basado en el archivo dockerfile llamado mentiunq-back (puede elegir otro nombre si asi lo desea).
