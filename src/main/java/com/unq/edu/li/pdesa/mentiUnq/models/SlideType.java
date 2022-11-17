@@ -7,27 +7,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "slide")
-@Getter
+@Table(name = "slide_type")
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Slide extends BaseModel {
+public class SlideType extends BaseModel {
 
+    @Expose
     @Id
-    @Expose
     private Long id;
+
     @Expose
-    private String nombre;
-
-    @ManyToOne
-    @JoinColumn(name = "slide_type_id")
-    private SlideType slideType;
-
-    public Slide(Long id, String nombre) {
-        this.id = id;
-        this.nombre = nombre;
-    }
+    private String name;
 }
