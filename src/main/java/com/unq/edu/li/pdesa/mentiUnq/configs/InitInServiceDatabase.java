@@ -51,7 +51,7 @@ public class InitInServiceDatabase {
         slideTypeService.create(contentType);
 
         slideService.create(new Slide(1L,"Multiple Choice", closeType));
-        slideService.create(new Slide(2L,"World Cloud", openType));
+        slideService.create(new Slide(2L,"Word Cloud", openType));
         slideService.create(new Slide(3L, "Open Ended", openType));
         slideService.create(new Slide(4L, "Scales", openType));
         slideService.create(new Slide(5L, "Ranking", openType));

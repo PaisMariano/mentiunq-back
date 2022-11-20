@@ -24,6 +24,7 @@ public class Slide extends BaseModel {
 
     @ManyToOne
     @JoinColumn(name = "slide_type_id")
+    @Expose
     private SlideType slideType;
 
     public Slide(Long id, String nombre) {

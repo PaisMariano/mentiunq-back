@@ -29,6 +29,7 @@ public class Question extends BaseModel {
 
     @OneToOne
     @JoinColumn(name = "slide_id")
+    @Expose
     private Slide slide;
 
     @ManyToOne
