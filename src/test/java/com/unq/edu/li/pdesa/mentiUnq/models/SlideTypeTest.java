@@ -13,13 +13,24 @@ public class SlideTypeTest {
         slideType = new SlideType();
     }
 
-    @Test
-    public void testGetter(){
-        assertNotNull(slideType);
-        assertNull(slideType.getId());
-        assertNull(slideType.getName());
-        slideType.setName("name");
-        assertNotNull(slideType.getName());
-        assertEquals("name", slideType.getName());
-    }
+	@Test
+	public void testGetter(){
+		assertNotNull(slideType);
+		assertNull(slideType.getId());
+		assertNull(slideType.getName());
+		slideType.setName("name");
+		assertNotNull(slideType.getName());
+		assertEquals("name", slideType.getName());
+	}
+
+	@Test
+	public void testAllArgsConstructor(){
+		slideType = new SlideType(1l, "name");
+
+		assertNotNull(slideType);
+		assertNotNull(slideType.getId());
+		assertNotNull(slideType.getName());
+		assertEquals("name", slideType.getName());
+		assertEquals(1l, slideType.getId());
+	}
 }
