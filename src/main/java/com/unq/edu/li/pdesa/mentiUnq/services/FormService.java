@@ -10,6 +10,7 @@ import com.unq.edu.li.pdesa.mentiUnq.models.*;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.Status;
 import com.unq.edu.li.pdesa.mentiUnq.repositories.*;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -337,4 +338,40 @@ public class FormService {
         return new ResponseUnit(Status.SUCCESS, "", resultResponse);
     }
 
+	public ResponseUnit addResponse(String codeShare, Long questionId, AnswerRequest request) throws EntityNotFoundException
+	{
+		getFormByCodeShare(codeShare);
+
+		Question aQuestion = getQuestion(questionId);
+		MentiOption mentiOption = new MentiOption();
+		mentiOption.setName(request.getOption());
+		mentiOption.setQuestion(aQuestion);
+		//aQuestion.addAnOption(mentiOption);
+
+		mentiOption = answerRepository.save(mentiOption);
+		//aQuestion = questionRepository.save(aQuestion);
+
+		return new ResponseUnit(Status.SUCCESS, "", aQuestion);
+	}
+
+	public ResponseUnit updateContent(String formId, Long questionId, QuestionRequest request) throws EntityNotFoundException
+	{
+		getFormByCodeShare(formId);
+
+		Question aQuestion = getQuestion(questionId);
+
+		MentiOption mentiOption = new MentiOption();
+
+		if(ObjectUtils.isEmpty(aQuestion.getMentiOptions()) ){
+			mentiOption.setName(request.getQuestion());
+			mentiOption.setQuestion(aQuestion);
+		}else{
+			mentiOption = aQuestion.getMentiOptions().get(0);
+			mentiOption.setName(request.getQuestion());
+		}
+
+		answerRepository.save(mentiOption);
+
+		return new ResponseUnit(Status.SUCCESS, "", aQuestion);
+	}
 }

@@ -74,4 +74,22 @@ public class AnswerController {
 
 		return ResponseEntity.ok(responseVoted);
 	}
+
+	@Operation(summary = "Add response", description = "Adds response to one question", operationId = "response")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+	})
+	@PostMapping(path = "/form/{codeShare}/question/{questionId}/response", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> response(
+			@Parameter(description = "code Share", required = true) @PathVariable("codeShare") String codeShare,
+			@Parameter(description = "questionId", required = true)  @PathVariable("questionId") Long questionId,
+			@Parameter(description = "Answer request", required = true)  @RequestBody AnswerRequest request) throws Exception {
+		ResponseUnit responseVoted = formService.addResponse(codeShare, questionId, request);
+
+		return ResponseEntity.ok(responseVoted);
+	}
+
 }

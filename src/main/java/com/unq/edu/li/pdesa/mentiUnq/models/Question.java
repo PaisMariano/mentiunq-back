@@ -39,4 +39,9 @@ public class Question extends BaseModel {
     @OneToMany(mappedBy = "question", cascade = {CascadeType.ALL})
     @Expose
     private List<MentiOption> mentiOptions;
+
+	public void addAnOption(MentiOption mentiOption)
+	{
+		this.mentiOptions.add(mentiOption);
+	}
 }
