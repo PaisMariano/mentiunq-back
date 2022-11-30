@@ -51,7 +51,7 @@ public class FormService {
         );
 
         String code = UUID.randomUUID().toString();
-        String codeShare = Base64.getEncoder().encodeToString(code.getBytes(StandardCharsets.UTF_8)).substring(0, 8).toUpperCase();
+        String codeShare = generateCodeShareByCode(code);
 
         Form form = new Form();
         form.setCode(code);
@@ -74,7 +74,12 @@ public class FormService {
         return new ResponseUnit(Status.SUCCESS, "", form);
     }
 
-    @Transactional
+	private static String generateCodeShareByCode(String code)
+	{
+		return Base64.getEncoder().encodeToString(code.getBytes(StandardCharsets.UTF_8)).substring(0, 8).toUpperCase();
+	}
+
+	@Transactional
     public ResponseUnit addQuestion(Long id, QuestionRequest question) throws Exception {
         Form foundForm = getFormById(id);
 
@@ -327,13 +332,28 @@ public class FormService {
         ResultResponse resultResponse = new ResultResponse();
 
         resultResponse.setSlides(aForm.getQuestions().size());
-
+        Integer openAmount = 0;
+        Integer closeAmount = 0;
+        Integer contentAmount = 0;
         for (Question q : aForm.getQuestions()){
-            for(MentiOption mo : q.getMentiOptions()){
-                resultResponse.setVotes(resultResponse.getVotes() + mo.getScore());
+            switch (q.getSlide().getSlideType().getName()) {
+                case "Abierta":
+                    openAmount += 1;
+                    break;
+                case "Cerrada":
+                    closeAmount += 1;
+                    for(MentiOption mo : q.getMentiOptions()){
+                        resultResponse.setVotes(resultResponse.getVotes() + mo.getScore());
+                    }
+                    break;
+                case "Contenido":
+                    contentAmount += 1;
+                    break;
             }
-            resultResponse.setCloseSlides(resultResponse.getCloseSlides()+1);
         }
+        resultResponse.setContentSlides(contentAmount);
+        resultResponse.setOpenSlides(openAmount);
+        resultResponse.setCloseSlides(closeAmount);
 
         return new ResponseUnit(Status.SUCCESS, "", resultResponse);
     }
@@ -362,10 +382,13 @@ public class FormService {
 
 		MentiOption mentiOption = new MentiOption();
 
-		if(ObjectUtils.isEmpty(aQuestion.getMentiOptions()) ){
+		if (ObjectUtils.isEmpty(aQuestion.getMentiOptions()))
+		{
 			mentiOption.setName(request.getQuestion());
 			mentiOption.setQuestion(aQuestion);
-		}else{
+		}
+		else
+		{
 			mentiOption = aQuestion.getMentiOptions().get(0);
 			mentiOption.setName(request.getQuestion());
 		}
@@ -373,5 +396,37 @@ public class FormService {
 		answerRepository.save(mentiOption);
 
 		return new ResponseUnit(Status.SUCCESS, "", aQuestion);
+	}
+
+	public ResponseUnit duplicate(Long formId) throws EntityNotFoundException
+	{
+		Form aForm = getFormById(formId);
+		Form aNewForm = new Form();
+		String code = UUID.randomUUID().toString();
+		String codeShare = generateCodeShareByCode(code);
+
+		/*List<Question> newQuestions = aForm.getQuestions().stream().map(_question->{
+			Question newQuestion = new Question();
+			if(_question.getSlide().getSlydeType().getName().equals("Abierta")){
+				//duplicar solo preguntas
+			}
+
+			if(_question.getSlide().getSlydeType().getName().equals("Cerrada")){
+				//duplicar solo inlcuido las opciones pero con score en 0
+			}
+
+			if(_question.getSlide().getSlydeType().getName().equals("Contenido")){
+				//duplicar t0do en base a
+			}
+		}).collect(Collectors.toList());
+		*/
+		aNewForm.setMentiUser(aForm.getMentiUser());
+		aNewForm.setName(aForm.getName());
+		aNewForm.setCode(code);
+		aNewForm.setCodeShare(codeShare);
+		aNewForm.setCreationDate(LocalDateTime.now());
+		aNewForm.setUpdateDate(LocalDateTime.now());
+		//aNewForm.setQuestions(newQuestions);
+		return new ResponseUnit(Status.SUCCESS, "", formRepository.save(aNewForm));
 	}
 }
