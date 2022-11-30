@@ -20,6 +20,7 @@ public class MentiOption extends BaseModel {
     @Expose
     private Long id;
     @Expose
+	@Column(length = 800)
     private String name;
     @Expose
     private Integer score;
