@@ -326,13 +326,28 @@ public class FormService {
         ResultResponse resultResponse = new ResultResponse();
 
         resultResponse.setSlides(aForm.getQuestions().size());
-
+        Integer openAmount = 0;
+        Integer closeAmount = 0;
+        Integer contentAmount = 0;
         for (Question q : aForm.getQuestions()){
-            for(MentiOption mo : q.getMentiOptions()){
-                resultResponse.setVotes(resultResponse.getVotes() + mo.getScore());
+            switch (q.getSlide().getSlideType().getName()) {
+                case "Abierta":
+                    openAmount += 1;
+                    break;
+                case "Cerrada":
+                    closeAmount += 1;
+                    for(MentiOption mo : q.getMentiOptions()){
+                        resultResponse.setVotes(resultResponse.getVotes() + mo.getScore());
+                    }
+                    break;
+                case "Contenido":
+                    contentAmount += 1;
+                    break;
             }
-            resultResponse.setCloseSlides(resultResponse.getCloseSlides()+1);
         }
+        resultResponse.setContentSlides(contentAmount);
+        resultResponse.setOpenSlides(openAmount);
+        resultResponse.setCloseSlides(closeAmount);
 
         return new ResponseUnit(Status.SUCCESS, "", resultResponse);
     }

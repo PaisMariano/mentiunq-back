@@ -28,7 +28,7 @@ public class ResponseUnitFixture
 
 	public static ResponseUnit withOkResponseSlides()
 	{
-		String payload =  "[{\"id\":1,\"nombre\":\"Multiple Choice\"}]";
+		String payload =  "[{\"id\":1,\"nombre\":\"Multiple Choice\",\"slideType\":{\"id\":1,\"name\":\"NAME\"}}]";
 		ResponseUnit responseUnit = ResponseUnitFixture.withDefaults();
 		responseUnit.setPayload(payload);
 		return responseUnit;
@@ -41,7 +41,7 @@ public class ResponseUnitFixture
 
 	public static ResponseUnit withOkResponseSlide()
 	{
-		String payload =  "{\"id\":1,\"nombre\":\"Multiple Choice\"}";
+		String payload =  "{\"id\":1,\"nombre\":\"Multiple Choice\",\"slideType\":{\"id\":1,\"name\":\"NAME\"}}";
 		ResponseUnit responseUnit = ResponseUnitFixture.withDefaults();
 		responseUnit.setPayload(payload);
 		return responseUnit;

@@ -14,6 +14,7 @@ import com.unq.edu.li.pdesa.mentiUnq.models.MentiOption;
 import com.unq.edu.li.pdesa.mentiUnq.models.MentiUser;
 import com.unq.edu.li.pdesa.mentiUnq.models.Question;
 import com.unq.edu.li.pdesa.mentiUnq.models.Slide;
+import com.unq.edu.li.pdesa.mentiUnq.models.SlideType;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.repositories.AnswerRepository;
 import com.unq.edu.li.pdesa.mentiUnq.repositories.FormRepository;
@@ -546,13 +547,18 @@ public class FormServiceTest
 	{
 		MentiOption option = mock(MentiOption.class);
 		Question aQuestion = mock(Question.class);
-		List<Question> questions = Arrays.asList(aQuestion);
+		Slide aSlide = mock(Slide.class);
+		SlideType slideType = mock(SlideType.class);
+		List<Question> questions = Arrays.asList(aQuestion, aQuestion, aQuestion);
 		List<MentiOption> options = Arrays.asList(option);
 
 		when(formRepository.findByCode(anyString())).thenReturn(Optional.of(aForm));
 		when(aForm.getQuestions()).thenReturn(questions);
 		when(aQuestion.getMentiOptions()).thenReturn(options);
 		when(option.getScore()).thenReturn(1);
+		when(aQuestion.getSlide()).thenReturn(aSlide);
+		when(aSlide.getSlideType()).thenReturn(slideType);
+		when(slideType.getName()).thenReturn("Abierta").thenReturn("Cerrada").thenReturn("Contenido");
 
 		ResponseUnit responseUnit = service.getResultsByFormCode(codeShare);
 		ResponseUnit expected = ResponseUnitFixture.withOkResultsFormByCode();
