@@ -87,27 +87,52 @@ public class AnswerControllerTest extends AbstractControllerTest {
         verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
     }
 
-    @Test
-    public void whenVotesThenControllerReturnsA200Ok() throws Exception
-    {
-        ResponseUnit responseUnit = ResponseUnitFixture.withOkResponseCreateForm();
+	@Test
+	public void whenVotesThenControllerReturnsA200Ok() throws Exception
+	{
+		ResponseUnit responseUnit = ResponseUnitFixture.withOkResponseCreateForm();
 
-        when(formService.vote(anyString(), anyLong(), anyLong())).thenReturn(responseUnit);
+		when(formService.vote(anyString(), anyLong(), anyLong())).thenReturn(responseUnit);
 
-        final MvcResult result = mockMvc.perform(
-                    post("/answer/form/{codeShare}/question/{questionId}/option/{optionId}"
-                        , codeShare, questionId, optionId)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn();
+		final MvcResult result = mockMvc.perform(
+						post("/answer/form/{codeShare}/question/{questionId}/option/{optionId}"
+								, codeShare, questionId, optionId)
+								.accept(MediaType.APPLICATION_JSON)
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
 
 
-        String response = result.getResponse().getContentAsString();
-        ResponseUnit returnedResponse = gson.fromJson(response, ResponseUnit.class);
-        ResponseUnit expectedResponse = ResponseUnitFixture.withOkResponseCreateForm();
+		String response = result.getResponse().getContentAsString();
+		ResponseUnit returnedResponse = gson.fromJson(response, ResponseUnit.class);
+		ResponseUnit expectedResponse = ResponseUnitFixture.withOkResponseCreateForm();
 
-        assertNotNull(result);
-        assertNotNull(response);
-        verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
-    }
+		assertNotNull(result);
+		assertNotNull(response);
+		verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
+	}
+
+	@Test
+	public void whenAddResponseThenControllerReturnsA200Ok() throws Exception
+	{
+		ResponseUnit responseUnit = ResponseUnitFixture.withOkResponseCreateForm();
+		AnswerRequest request = AnswerRequestFixture.withDefaults();
+
+		when(formService.addResponse(anyString(), anyLong(), any(AnswerRequest.class))).thenReturn(responseUnit);
+
+		final MvcResult result = mockMvc.perform(
+						post("/answer/form/{codeShare}/question/{questionId}/response", codeShare, questionId)
+								.content(asJsonString(request))
+								.accept(MediaType.APPLICATION_JSON)
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+
+
+		String response = result.getResponse().getContentAsString();
+		ResponseUnit returnedResponse = gson.fromJson(response, ResponseUnit.class);
+		ResponseUnit expectedResponse = ResponseUnitFixture.withOkResponseCreateForm();
+
+		assertNotNull(result);
+		assertNotNull(response);
+		verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
+	}
 }

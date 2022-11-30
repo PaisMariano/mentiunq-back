@@ -266,8 +266,8 @@ public class FormController {
 			@Parameter(description = "Question id", required = true) @PathVariable("questionId") Long questionId,
 			@Parameter(description = "Form body", required = true) @RequestBody QuestionRequest question) throws Exception {
 
-		ResponseUnit createdForm = formService.updateContent(formCode, questionId, question);
+		ResponseUnit responseQuestion = formService.updateContent(formCode, questionId, question);
 
-		return ResponseEntity.ok(createdForm);
+		return ResponseEntity.ok(responseQuestion);
 	}
 }

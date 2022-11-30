@@ -378,4 +378,29 @@ public class FormControllerTest extends AbstractControllerTest
 		verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
 		verify(formService).deleteFormById(anyLong());
 	}
+
+	@Test
+	public void whenUpdateContentWithValidRequestThenControllerReturnsA200Ok() throws Exception
+	{
+		ResponseUnit responseUnit = ResponseUnitFixture.withDefaults();
+		QuestionRequest request = QuestionRequestFixture.withDefaults();
+
+		when(formService.updateContent(anyString(),anyLong(),any(QuestionRequest.class))).thenReturn(responseUnit);
+
+		final MvcResult result = mockMvc.perform(patch("/api/form/updateContent/{formCode}/question/{questionId}", code, questionId)
+						.content(asJsonString(request))
+						.accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+
+
+		String response = result.getResponse().getContentAsString();
+		ResponseUnit returnedResponse = gson.fromJson(response, ResponseUnit.class);
+		ResponseUnit expectedResponse = ResponseUnitFixture.withDefaults();
+
+		assertNotNull(result);
+		assertNotNull(response);
+		verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
+		verify(formService).updateContent(anyString(),anyLong(),any(QuestionRequest.class));
+	}
 }

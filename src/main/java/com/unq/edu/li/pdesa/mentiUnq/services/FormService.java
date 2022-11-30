@@ -354,9 +354,9 @@ public class FormService {
 		return new ResponseUnit(Status.SUCCESS, "", aQuestion);
 	}
 
-	public ResponseUnit updateContent(String formId, Long questionId, QuestionRequest request) throws EntityNotFoundException
+	public ResponseUnit updateContent(String codeShare, Long questionId, QuestionRequest request) throws EntityNotFoundException
 	{
-		getFormByCodeShare(formId);
+		getFormByCodeShare(codeShare);
 
 		Question aQuestion = getQuestion(questionId);
 
