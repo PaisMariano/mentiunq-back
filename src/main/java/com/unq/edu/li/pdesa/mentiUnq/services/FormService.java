@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class FormService {
@@ -366,10 +367,8 @@ public class FormService {
 		MentiOption mentiOption = new MentiOption();
 		mentiOption.setName(request.getOption());
 		mentiOption.setQuestion(aQuestion);
-		//aQuestion.addAnOption(mentiOption);
 
-		mentiOption = answerRepository.save(mentiOption);
-		//aQuestion = questionRepository.save(aQuestion);
+		answerRepository.save(mentiOption);
 
 		return new ResponseUnit(Status.SUCCESS, "", aQuestion);
 	}
@@ -405,28 +404,42 @@ public class FormService {
 		String code = UUID.randomUUID().toString();
 		String codeShare = generateCodeShareByCode(code);
 
-		/*List<Question> newQuestions = aForm.getQuestions().stream().map(_question->{
+		List<Question> newQuestions = aForm.getQuestions().stream().map(_question->{
 			Question newQuestion = new Question();
-			if(_question.getSlide().getSlydeType().getName().equals("Abierta")){
-				//duplicar solo preguntas
-			}
+			newQuestion.setQuestion(_question.getQuestion());
+			newQuestion.setForm(aNewForm);
+			newQuestion.setSlide(_question.getSlide());
+			newQuestion.setIsCurrent(_question.getIsCurrent());
 
-			if(_question.getSlide().getSlydeType().getName().equals("Cerrada")){
-				//duplicar solo inlcuido las opciones pero con score en 0
-			}
+			List<MentiOption> newMentiOptions = new ArrayList<>();
 
-			if(_question.getSlide().getSlydeType().getName().equals("Contenido")){
-				//duplicar t0do en base a
+			if(_question.getSlide().getSlideType().getName().equals(SlideTypeEnum.CLOSE.getSlideType())){
+				newMentiOptions = _question.getMentiOptions()
+						.stream()
+						.map(_mentiOption -> setScoreToZero(_mentiOption, newQuestion))
+						.collect(Collectors.toList());
 			}
+			newQuestion.setMentiOptions(newMentiOptions);
+
+			return newQuestion;
 		}).collect(Collectors.toList());
-		*/
-		aNewForm.setMentiUser(aForm.getMentiUser());
-		aNewForm.setName(aForm.getName());
+
 		aNewForm.setCode(code);
 		aNewForm.setCodeShare(codeShare);
+		aNewForm.setMentiUser(aForm.getMentiUser());
+		aNewForm.setName("Formulario "+codeShare);
 		aNewForm.setCreationDate(LocalDateTime.now());
 		aNewForm.setUpdateDate(LocalDateTime.now());
-		//aNewForm.setQuestions(newQuestions);
+		aNewForm.setQuestions(newQuestions);
 		return new ResponseUnit(Status.SUCCESS, "", formRepository.save(aNewForm));
+	}
+
+	private MentiOption setScoreToZero(MentiOption mentiOption, Question newQuestion)
+	{
+		MentiOption newMentiOption = new MentiOption();
+		newMentiOption.setScore(0);
+		newMentiOption.setName(mentiOption.getName());
+		newMentiOption.setQuestion(newQuestion);
+		return newMentiOption;
 	}
 }

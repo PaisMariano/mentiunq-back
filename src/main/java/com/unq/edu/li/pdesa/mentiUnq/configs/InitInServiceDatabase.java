@@ -3,6 +3,7 @@ package com.unq.edu.li.pdesa.mentiUnq.configs;
 import com.unq.edu.li.pdesa.mentiUnq.exceptions.EntityNotFoundException;
 import com.unq.edu.li.pdesa.mentiUnq.models.Slide;
 import com.unq.edu.li.pdesa.mentiUnq.models.SlideType;
+import com.unq.edu.li.pdesa.mentiUnq.models.SlideTypeEnum;
 import com.unq.edu.li.pdesa.mentiUnq.services.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -42,9 +43,9 @@ public class InitInServiceDatabase {
         }
     }
     private void fireInitialSlides() throws Exception {
-        SlideType openType = new SlideType(1L, "Abierta");
-        SlideType closeType = new SlideType(2L, "Cerrada");
-        SlideType contentType = new SlideType(3L, "Contenido");
+        SlideType openType = new SlideType(1L, SlideTypeEnum.OPEN.getSlideType());
+        SlideType closeType = new SlideType(2L, SlideTypeEnum.CLOSE.getSlideType());
+        SlideType contentType = new SlideType(3L, SlideTypeEnum.CONTENT.getSlideType());
 
         slideTypeService.create(openType);
         slideTypeService.create(closeType);

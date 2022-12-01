@@ -280,7 +280,7 @@ public class FormController {
 			@ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
 			@ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
 	})
-	@GetMapping(path = "/duplicate/{formId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	@PostMapping(path = "/duplicate/{formId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<?> duplicate(@Parameter(description = "Form id", required = true)@PathVariable("formId") Long formId) throws Exception {
 		return ResponseEntity.ok(formService.duplicate(formId));
 	}
