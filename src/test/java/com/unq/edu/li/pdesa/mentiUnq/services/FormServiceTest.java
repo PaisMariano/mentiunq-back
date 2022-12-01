@@ -568,4 +568,67 @@ public class FormServiceTest
 		assertEquals(expected.getStatus(), responseUnit.getStatus());
 		verify(formRepository).findByCode(anyString());
 	}
+
+	@Test
+	public void whenTryToAddResponseInAQuestionThenReturnAValidResponseUnit() throws EntityNotFoundException
+	{
+		Question aQuestion = mock(Question.class);
+		AnswerRequest request = AnswerRequestFixture.withDefaults();
+
+		when(formRepository.findByCodeShare(anyString())).thenReturn(Optional.of(aForm));
+		when(questionRepository.findById(anyLong())).thenReturn(Optional.of(aQuestion));
+
+		ResponseUnit responseUnit = service.addResponse(codeShare, questionId, request);
+		ResponseUnit expected = ResponseUnitFixture.withOkQuestion();
+
+		assertNotNull(responseUnit);
+		assertEquals(expected.getMessage(), responseUnit.getMessage());
+		assertEquals(expected.getStatus(), responseUnit.getStatus());
+		verify(formRepository).findByCodeShare(anyString());
+		verify(questionRepository).findById(anyLong());
+		verify(answerRepository).save(any(MentiOption.class));
+	}
+
+	@Test
+	public void whenTryToUpdateContentInAQuestionAndHasNotAnOptionThenReturnAValidResponseUnit() throws EntityNotFoundException
+	{
+		Question aQuestion = mock(Question.class);
+		QuestionRequest request = QuestionRequestFixture.withDefaults();
+
+		when(formRepository.findByCodeShare(anyString())).thenReturn(Optional.of(aForm));
+		when(questionRepository.findById(anyLong())).thenReturn(Optional.of(aQuestion));
+		when(aQuestion.getMentiOptions()).thenReturn(new ArrayList<>());
+
+		ResponseUnit responseUnit = service.updateContent(codeShare, questionId, request);
+		ResponseUnit expected = ResponseUnitFixture.withOkQuestion();
+
+		assertNotNull(responseUnit);
+		assertEquals(expected.getMessage(), responseUnit.getMessage());
+		assertEquals(expected.getStatus(), responseUnit.getStatus());
+		verify(formRepository).findByCodeShare(anyString());
+		verify(questionRepository).findById(anyLong());
+		verify(answerRepository).save(any(MentiOption.class));
+	}
+
+	@Test
+	public void whenTryToUpdateContentInAQuestionAndHasAnOptionThenReturnAValidResponseUnit() throws EntityNotFoundException
+	{
+		Question aQuestion = mock(Question.class);
+		QuestionRequest request = QuestionRequestFixture.withDefaults();
+		MentiOption mentiOption = mock(MentiOption.class);
+
+		when(formRepository.findByCodeShare(anyString())).thenReturn(Optional.of(aForm));
+		when(questionRepository.findById(anyLong())).thenReturn(Optional.of(aQuestion));
+		when(aQuestion.getMentiOptions()).thenReturn(Arrays.asList(mentiOption));
+
+		ResponseUnit responseUnit = service.updateContent(codeShare, questionId, request);
+		ResponseUnit expected = ResponseUnitFixture.withOkQuestion();
+
+		assertNotNull(responseUnit);
+		assertEquals(expected.getMessage(), responseUnit.getMessage());
+		assertEquals(expected.getStatus(), responseUnit.getStatus());
+		verify(formRepository).findByCodeShare(anyString());
+		verify(questionRepository).findById(anyLong());
+		verify(answerRepository).save(any(MentiOption.class));
+	}
 }

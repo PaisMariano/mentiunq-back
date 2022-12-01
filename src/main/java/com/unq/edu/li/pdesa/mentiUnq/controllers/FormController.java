@@ -251,4 +251,37 @@ public class FormController {
     public ResponseEntity<?> getResultsByFormCode(@Parameter(description = "form Code", required = true)@PathVariable("formCode") String formCode) throws Exception {
         return ResponseEntity.ok(formService.getResultsByFormCode(formCode));
     }
+
+	@PreAuthorize("hasAuthority('USER')")
+	@Operation(summary = "Update content from a question form", description = "Update content from a question in the database ", operationId = "updateContent")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+	})
+	@PatchMapping(path = "/updateContent/{formCode}/question/{questionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity updateContent(
+			@Parameter(description = "Form code", required = true) @PathVariable("formCode") String formCode,
+			@Parameter(description = "Question id", required = true) @PathVariable("questionId") Long questionId,
+			@Parameter(description = "Form body", required = true) @RequestBody QuestionRequest question) throws Exception
+	{
+
+		ResponseUnit responseQuestion = formService.updateContent(formCode, questionId, question);
+
+		return ResponseEntity.ok(responseQuestion);
+	}
+
+	@PreAuthorize("hasAuthority('USER')")
+	@Operation(summary = "Duplicate presentation", description = "Duplicate presentation by form id", operationId = "duplicate")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+	})
+	@PostMapping(path = "/duplicate/{formId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> duplicate(@Parameter(description = "Form id", required = true)@PathVariable("formId") Long formId) throws Exception {
+		return ResponseEntity.ok(formService.duplicate(formId));
+	}
 }

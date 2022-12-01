@@ -10,6 +10,7 @@ import com.unq.edu.li.pdesa.mentiUnq.models.*;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.Status;
 import com.unq.edu.li.pdesa.mentiUnq.repositories.*;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class FormService {
@@ -50,7 +52,7 @@ public class FormService {
         );
 
         String code = UUID.randomUUID().toString();
-        String codeShare = Base64.getEncoder().encodeToString(code.getBytes(StandardCharsets.UTF_8)).substring(0, 8).toUpperCase();
+        String codeShare = generateCodeShareByCode(code);
 
         Form form = new Form();
         form.setCode(code);
@@ -73,7 +75,12 @@ public class FormService {
         return new ResponseUnit(Status.SUCCESS, "", form);
     }
 
-    @Transactional
+	private static String generateCodeShareByCode(String code)
+	{
+		return Base64.getEncoder().encodeToString(code.getBytes(StandardCharsets.UTF_8)).substring(0, 8).toUpperCase();
+	}
+
+	@Transactional
     public ResponseUnit addQuestion(Long id, QuestionRequest question) throws Exception {
         Form foundForm = getFormById(id);
 
@@ -352,4 +359,87 @@ public class FormService {
         return new ResponseUnit(Status.SUCCESS, "", resultResponse);
     }
 
+	public ResponseUnit addResponse(String codeShare, Long questionId, AnswerRequest request) throws EntityNotFoundException
+	{
+		getFormByCodeShare(codeShare);
+
+		Question aQuestion = getQuestion(questionId);
+		MentiOption mentiOption = new MentiOption();
+		mentiOption.setName(request.getOption());
+		mentiOption.setQuestion(aQuestion);
+
+		answerRepository.save(mentiOption);
+
+		return new ResponseUnit(Status.SUCCESS, "", aQuestion);
+	}
+
+	public ResponseUnit updateContent(String codeShare, Long questionId, QuestionRequest request) throws EntityNotFoundException
+	{
+		getFormByCodeShare(codeShare);
+
+		Question aQuestion = getQuestion(questionId);
+
+		MentiOption mentiOption = new MentiOption();
+
+		if (ObjectUtils.isEmpty(aQuestion.getMentiOptions()))
+		{
+			mentiOption.setName(request.getQuestion());
+			mentiOption.setQuestion(aQuestion);
+		}
+		else
+		{
+			mentiOption = aQuestion.getMentiOptions().get(0);
+			mentiOption.setName(request.getQuestion());
+		}
+
+		answerRepository.save(mentiOption);
+
+		return new ResponseUnit(Status.SUCCESS, "", aQuestion);
+	}
+
+	public ResponseUnit duplicate(Long formId) throws EntityNotFoundException
+	{
+		Form aForm = getFormById(formId);
+		Form aNewForm = new Form();
+		String code = UUID.randomUUID().toString();
+		String codeShare = generateCodeShareByCode(code);
+
+		List<Question> newQuestions = aForm.getQuestions().stream().map(_question->{
+			Question newQuestion = new Question();
+			newQuestion.setQuestion(_question.getQuestion());
+			newQuestion.setForm(aNewForm);
+			newQuestion.setSlide(_question.getSlide());
+			newQuestion.setIsCurrent(_question.getIsCurrent());
+
+			List<MentiOption> newMentiOptions = new ArrayList<>();
+
+			if(_question.getSlide().getSlideType().getName().equals(SlideTypeEnum.CLOSE.getSlideType())){
+				newMentiOptions = _question.getMentiOptions()
+						.stream()
+						.map(_mentiOption -> setScoreToZero(_mentiOption, newQuestion))
+						.collect(Collectors.toList());
+			}
+			newQuestion.setMentiOptions(newMentiOptions);
+
+			return newQuestion;
+		}).collect(Collectors.toList());
+
+		aNewForm.setCode(code);
+		aNewForm.setCodeShare(codeShare);
+		aNewForm.setMentiUser(aForm.getMentiUser());
+		aNewForm.setName("Formulario "+codeShare);
+		aNewForm.setCreationDate(LocalDateTime.now());
+		aNewForm.setUpdateDate(LocalDateTime.now());
+		aNewForm.setQuestions(newQuestions);
+		return new ResponseUnit(Status.SUCCESS, "", formRepository.save(aNewForm));
+	}
+
+	private MentiOption setScoreToZero(MentiOption mentiOption, Question newQuestion)
+	{
+		MentiOption newMentiOption = new MentiOption();
+		newMentiOption.setScore(0);
+		newMentiOption.setName(mentiOption.getName());
+		newMentiOption.setQuestion(newQuestion);
+		return newMentiOption;
+	}
 }

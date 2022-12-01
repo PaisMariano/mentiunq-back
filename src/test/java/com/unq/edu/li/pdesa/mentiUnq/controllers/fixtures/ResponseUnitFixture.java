@@ -108,6 +108,14 @@ public class ResponseUnitFixture
 		return responseUnit;
 	}
 
+	public static ResponseUnit withOkQuestion()
+	{
+		String payload = "{\"id\":1,\"question\":\"name\",\"isCurrent\":\"true\",\"mentiOptions\":\"[]\"";
+		ResponseUnit responseUnit = ResponseUnitFixture.withDefaults();
+		responseUnit.setPayload(payload);
+		return responseUnit;
+	}
+
 	private ResponseUnit build()
 	{
 		return new ResponseUnit(status, message, payload);
