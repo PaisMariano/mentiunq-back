@@ -631,4 +631,15 @@ public class FormServiceTest
 		verify(questionRepository).findById(anyLong());
 		verify(answerRepository).save(any(MentiOption.class));
 	}
+
+	@Test
+	public void whenTryToEndFormThenReturnAValidResponseUnit() throws EntityNotFoundException {
+		when(formRepository.findById(anyLong())).thenReturn(Optional.of(mock(Form.class)));
+
+		ResponseUnit responseUnit = service.endForm(formId);
+
+		assertNotNull(responseUnit);
+		verify(formRepository).findById(anyLong());
+		verify(formRepository).save(any(Form.class));
+	}
 }

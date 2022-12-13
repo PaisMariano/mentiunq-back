@@ -61,6 +61,7 @@ public class FormService {
         form.setCreationDate(LocalDateTime.now());
         form.setUpdateDate(LocalDateTime.now());
         form.setMentiUser(user);
+        form.setEnded(false);
 
         form = formRepository.save(form);
 
@@ -431,8 +432,16 @@ public class FormService {
 		aNewForm.setCreationDate(LocalDateTime.now());
 		aNewForm.setUpdateDate(LocalDateTime.now());
 		aNewForm.setQuestions(newQuestions);
+        aNewForm.setEnded(false);
 		return new ResponseUnit(Status.SUCCESS, "", formRepository.save(aNewForm));
 	}
+
+    public ResponseUnit endForm(Long formId) throws EntityNotFoundException {
+        Form aForm = getFormById(formId);
+        aForm.setEnded(true);
+
+        return new ResponseUnit(Status.SUCCESS, "", formRepository.save(aForm));
+    }
 
 	private MentiOption setScoreToZero(MentiOption mentiOption, Question newQuestion)
 	{
@@ -442,4 +451,5 @@ public class FormService {
 		newMentiOption.setQuestion(newQuestion);
 		return newMentiOption;
 	}
+
 }
