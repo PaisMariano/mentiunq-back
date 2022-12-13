@@ -1,6 +1,7 @@
 package com.unq.edu.li.pdesa.mentiUnq.configs;
 
-import com.unq.edu.li.pdesa.mentiUnq.exceptions.EntityNotFoundException;
+import com.unq.edu.li.pdesa.mentiUnq.controllers.request.AnswerRequest;
+import com.unq.edu.li.pdesa.mentiUnq.controllers.request.QuestionRequest;
 import com.unq.edu.li.pdesa.mentiUnq.models.Slide;
 import com.unq.edu.li.pdesa.mentiUnq.models.SlideType;
 import com.unq.edu.li.pdesa.mentiUnq.models.SlideTypeEnum;
@@ -66,7 +67,7 @@ public class InitInServiceDatabase {
     }
 
     private void fireInitialUsers() throws Exception {
-        authService.processOAuthPostLogin("paismariano@gmail.com", "123456789");
+        authService.processOAuthPostLogin("paismarianoa@gmail.com", "123456789");
         authService.processOAuthPostLogin("pablo.g.marrero@gmail.com", "123456789");
     }
 
@@ -75,8 +76,52 @@ public class InitInServiceDatabase {
         authService.createWhiteListEmail("frasespuras@gmail.com");
     }
 
-    private void fireInitialForms() throws EntityNotFoundException
+    private void fireInitialForms() throws Exception
     {
         formService.createForm(1l);
+
+        //HEADING
+        QuestionRequest question1 = new QuestionRequest();
+        question1.setSlideId(9L);
+        question1.setQuestion("Presentación de Práctica de Desarrollo de Software");
+
+        //MULTIPLE CHOICE
+        QuestionRequest question2 = new QuestionRequest();
+        question2.setSlideId(1L);
+        question2.setQuestion("¿Es Gabi la mejor directora del mundo?");
+
+        //OPCIONES
+        AnswerRequest answer1 = new AnswerRequest();
+        answer1.setOption("Sí, obvio");
+
+        AnswerRequest answer2 = new AnswerRequest();
+        answer2.setOption("Sí y se va a quedar por siempre");
+
+        AnswerRequest answer3 = new AnswerRequest();
+        answer3.setOption("No, para nada (Atenete a las consecuencias)");
+
+        AnswerRequest answer4 = new AnswerRequest();
+        answer4.setOption("Si, pero solo si me anota en Algoritmos");
+
+        AnswerRequest answer5 = new AnswerRequest();
+        answer5.setOption("NS / NC");
+
+
+        //WORD CLOUD
+        QuestionRequest question3 = new QuestionRequest();
+        question3.setSlideId(2L);
+        question3.setQuestion("¿Cúal fue el tema de la materia que más te costó integrar al tp / enseñar?");
+
+        formService.addQuestion(5L, question1);
+        formService.addQuestion(5L, question2);
+        formService.addQuestion(5L, question3);
+
+        formService.addAnswer(5L, 8L, answer1);
+        formService.addAnswer(5L, 8L, answer2);
+        formService.addAnswer(5L, 8L, answer3);
+        formService.addAnswer(5L, 8L, answer4);
+        formService.addAnswer(5L, 8L, answer5);
+
+        formService.deleteQuestionById(5L, 6L);
     }
 }
