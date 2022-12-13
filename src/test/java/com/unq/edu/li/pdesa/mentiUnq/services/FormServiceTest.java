@@ -693,4 +693,14 @@ public class FormServiceTest
 		verify(formRepository).findById(anyLong());
 		verify(formRepository).save(any(Form.class));
 	}
+
+	@Test
+	public void testGetFormByShareCodeThenProcessOk() throws EntityNotFoundException {
+		when(formRepository.findByCodeShare(anyString())).thenReturn(Optional.of(mock(Form.class)));
+
+		ResponseUnit responseUnit = service.getFormByFormCode(codeShare);
+
+		assertNotNull(responseUnit);
+		verify(formRepository).findByCodeShare(anyString());
+	}
 }
