@@ -15,6 +15,7 @@ import com.unq.edu.li.pdesa.mentiUnq.models.MentiUser;
 import com.unq.edu.li.pdesa.mentiUnq.models.Question;
 import com.unq.edu.li.pdesa.mentiUnq.models.Slide;
 import com.unq.edu.li.pdesa.mentiUnq.models.SlideType;
+import com.unq.edu.li.pdesa.mentiUnq.models.SlideTypeEnum;
 import com.unq.edu.li.pdesa.mentiUnq.protocols.ResponseUnit;
 import com.unq.edu.li.pdesa.mentiUnq.repositories.AnswerRepository;
 import com.unq.edu.li.pdesa.mentiUnq.repositories.FormRepository;
@@ -641,5 +642,65 @@ public class FormServiceTest
 		assertNotNull(responseUnit);
 		verify(formRepository).findById(anyLong());
 		verify(formRepository).save(any(Form.class));
+	}
+
+	@Test
+	public void whenDuplicateFormAndOneQuestionAndIsNotCloseSlideThenReturnAFormWithOneQuestion() throws EntityNotFoundException {
+
+		Question aQuestion = mock(Question.class);
+		Slide aSlide = mock(Slide.class);
+		SlideType aSlideType = mock(SlideType.class);
+		List<Question> questions = Arrays.asList(aQuestion);
+
+		when(formRepository.findById(anyLong())).thenReturn(Optional.of(aForm));
+		when(aForm.getQuestions()).thenReturn(questions);
+		when(aQuestion.getQuestion()).thenReturn("QUESTION");
+		when(aQuestion.getSlide()).thenReturn(aSlide);
+		when(aQuestion.getIsCurrent()).thenReturn(true);
+		when(aSlide.getSlideType()).thenReturn(aSlideType);
+		when(aSlideType.getName()).thenReturn(SlideTypeEnum.OPEN.getSlideType());
+
+		ResponseUnit responseUnit = service.duplicate(formId);
+
+		assertNotNull(responseUnit);
+		verify(formRepository).findById(anyLong());
+		verify(formRepository).save(any(Form.class));
+	}
+
+	@Test
+	public void whenDuplicateFormAndOneQuestionAndIsCloseSlideThenReturnAFormWithOneQuestion() throws EntityNotFoundException {
+
+		Question aQuestion = mock(Question.class);
+		Slide aSlide = mock(Slide.class);
+		SlideType aSlideType = mock(SlideType.class);
+		List<Question> questions = Arrays.asList(aQuestion);
+		MentiOption mentiOption = mock(MentiOption.class);
+		List<MentiOption> mentiOptions = Arrays.asList(mentiOption);
+
+		when(formRepository.findById(anyLong())).thenReturn(Optional.of(aForm));
+		when(aForm.getQuestions()).thenReturn(questions);
+		when(aQuestion.getQuestion()).thenReturn("QUESTION");
+		when(aQuestion.getSlide()).thenReturn(aSlide);
+		when(aQuestion.getIsCurrent()).thenReturn(true);
+		when(aSlide.getSlideType()).thenReturn(aSlideType);
+		when(aSlideType.getName()).thenReturn(SlideTypeEnum.CLOSE.getSlideType());
+		when(aQuestion.getMentiOptions()).thenReturn(mentiOptions);
+		when(mentiOption.getName()).thenReturn("NAME");
+
+		ResponseUnit responseUnit = service.duplicate(formId);
+
+		assertNotNull(responseUnit);
+		verify(formRepository).findById(anyLong());
+		verify(formRepository).save(any(Form.class));
+	}
+
+	@Test
+	public void testGetFormByShareCodeThenProcessOk() throws EntityNotFoundException {
+		when(formRepository.findByCodeShare(anyString())).thenReturn(Optional.of(mock(Form.class)));
+
+		ResponseUnit responseUnit = service.getFormByFormCode(codeShare);
+
+		assertNotNull(responseUnit);
+		verify(formRepository).findByCodeShare(anyString());
 	}
 }

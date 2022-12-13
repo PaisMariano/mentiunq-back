@@ -452,4 +452,10 @@ public class FormService {
 		return newMentiOption;
 	}
 
+	public ResponseUnit getFormByFormCode(String formCode) throws EntityNotFoundException
+	{
+		Form aForm = getFormByCodeShare(formCode);
+		return new ResponseUnit(Status.SUCCESS, "", aForm);
+	}
+
 }
