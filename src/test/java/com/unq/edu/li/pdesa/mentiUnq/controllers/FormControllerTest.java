@@ -403,4 +403,48 @@ public class FormControllerTest extends AbstractControllerTest
 		verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
 		verify(formService).updateContent(anyString(),anyLong(),any(QuestionRequest.class));
 	}
+
+	@Test
+	public void whenEndPresentationWithValidRequestThenControllerReturnsA200Ok() throws Exception
+	{
+		ResponseUnit responseUnit = ResponseUnitFixture.withOkResponseCreateForm();
+
+		when(formService.endForm(anyLong())).thenReturn(responseUnit);
+
+		final MvcResult result = mockMvc.perform(patch("/api/form/endform/{formId}", formId)
+						.accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+
+
+		String response = result.getResponse().getContentAsString();
+		ResponseUnit returnedResponse = gson.fromJson(response, ResponseUnit.class);
+		ResponseUnit expectedResponse = ResponseUnitFixture.withOkResponseCreateForm();
+
+		assertNotNull(result);
+		assertNotNull(response);
+		verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
+		verify(formService).endForm(anyLong());
+	}
+
+	@Test
+	public void whenGetFormByShareCodeWithValidRequestThenControllerReturnsA200Ok() throws Exception
+	{
+		ResponseUnit responseUnit = ResponseUnitFixture.withOkGetFormByCode();
+
+		when(formService.getFormByFormCode(anyString())).thenReturn(responseUnit);
+
+		final MvcResult result = mockMvc.perform(get("/api/form/formCode/{formCode}", code)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+
+
+		String response = result.getResponse().getContentAsString();
+		ResponseUnit returnedResponse = gson.fromJson(response, ResponseUnit.class);
+		ResponseUnit expectedResponse = ResponseUnitFixture.withOkGetFormByCode();
+
+		assertNotNull(result);
+		assertNotNull(response);
+		verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
+	}
 }

@@ -284,4 +284,30 @@ public class FormController {
 	public ResponseEntity<?> duplicate(@Parameter(description = "Form id", required = true)@PathVariable("formId") Long formId) throws Exception {
 		return ResponseEntity.ok(formService.duplicate(formId));
 	}
+
+    @PreAuthorize("hasAuthority('USER')")
+    @Operation(summary = "End presentation", description = "End presentation by form id", operationId = "endform")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+    })
+    @PatchMapping (path = "/endform/{formId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> endForm(@Parameter(description = "Form id", required = true)@PathVariable("formId") Long formId) throws Exception {
+        return ResponseEntity.ok(formService.endForm(formId));
+    }
+
+	@PreAuthorize("hasAuthority('USER')")
+	@Operation(summary = "Get form by code share", description = "Get form by code share", operationId = "getFormByCodeShare")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Successful response", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ResponseUnit.class))),
+			@ApiResponse(responseCode = "500", description = "Internal Error.", content = @Content(schema = @Schema(implementation = ResponseUnit.class)))
+	})
+	@GetMapping(path = "/formCode/{formCode}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> getFormByCodeShare(@Parameter(description = "Form code", required = true)@PathVariable("formCode") String formCode) throws Exception {
+		return ResponseEntity.ok(formService.getFormByFormCode(formCode));
+	}
 }
