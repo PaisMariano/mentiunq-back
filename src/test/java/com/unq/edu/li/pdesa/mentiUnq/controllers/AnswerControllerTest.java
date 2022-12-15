@@ -135,4 +135,25 @@ public class AnswerControllerTest extends AbstractControllerTest {
 		assertNotNull(response);
 		verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
 	}
+
+	@Test
+	public void whenGetFormByShareCodeWithValidRequestThenControllerReturnsA200Ok() throws Exception
+	{
+		ResponseUnit responseUnit = ResponseUnitFixture.withOkGetFormByCode();
+
+		when(formService.getFormByFormCode(anyString())).thenReturn(responseUnit);
+
+		final MvcResult result = mockMvc.perform(get("/answer/formCode/{formCode}", codeShare)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+
+
+		String response = result.getResponse().getContentAsString();
+		ResponseUnit returnedResponse = gson.fromJson(response, ResponseUnit.class);
+		ResponseUnit expectedResponse = ResponseUnitFixture.withOkGetFormByCode();
+
+		assertNotNull(result);
+		assertNotNull(response);
+		verifyReturnedAndExpectedResponse(returnedResponse, expectedResponse);
+	}
 }
